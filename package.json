@@ -8,13 +8,23 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "axios": "^0.24.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-graphql": "^0.12.0",
+    "graphql": "^15.7.2",
     "next": "12.0.4",
+    "pg": "^8.7.1",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "styled-components": "^5.3.3"
   },
   "devDependencies": {
     "@types/node": "16.11.9",
     "@types/react": "17.0.35",
+    "@types/styled-components": "^5.1.15",
+    "autoprefixer": "^10.4.0",
+    "babel-plugin-styled-components": "^1.13.3",
     "eslint": "7.32.0",
     "eslint-config-next": "12.0.4",
     "typescript": "4.5.2"
