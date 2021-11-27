@@ -16,7 +16,6 @@ const Layout = ({ children, title = 'beanbook' }: Props) => (
         </Head>
         <header>
          <NavBar />
-         <h1>hey</h1>
         </header>
         {children}
         <footer>
