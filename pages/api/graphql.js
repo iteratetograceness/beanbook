@@ -1,7 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 const { graphql, buildSchema } = require('graphql');
 const { makeExecutableSchema } = require('@graphql-tools/schema');
-const { applyMiddleware } = require('graphql-middleware');
 const { Pool } = require('pg');
 require('dotenv').config();
 

@@ -1,4 +1,4 @@
-import type { NextPage } from 'next';
+import type { NextPage, SyntheticEvent } from 'next';
 import AuthLayout from './../components/authLayout';
 import Button from '../components/button';
 import Link from 'next/link';
@@ -50,6 +50,12 @@ const Login: NextPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const submit = async (e: SyntheticEvent) => {
+    e.preventDefault();
+
+
+  }
+
   return (
     <AuthLayout>
       <Head>
@@ -57,12 +63,12 @@ const Login: NextPage = () => {
       </Head>
       <Container>
         <Label>username</Label>
-        <input />
+        <input onChange={(e) => setUsername(e.target.value)}/>
         <Label>password</Label>
-        <input type='password' />
+        <input type='password' onChange={(e) => setPassword(e.target.value)}/>
         <div className='button-container'>
           {/* login button */}
-          {/* <Button 
+          <Button 
             variant='primary' 
             inverse={false}
             whileHover={{ scale: 1.1 }}
@@ -73,7 +79,7 @@ const Login: NextPage = () => {
                 inverse={false}
                 whileHover={{ scale: 1.1 }}
               >signup</Button>
-          </Link> */}
+          </Link>
         </div>
       </Container>
     </AuthLayout>

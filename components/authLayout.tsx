@@ -13,7 +13,8 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   align-content: center;
-  height: 100vh;
+  margin: 5rem 0;
+  height: auto;
   width: 100vw;
   color: #ded9d1;
   font-size: 2rem;

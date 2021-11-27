@@ -8,19 +8,8 @@ import { useState } from 'react';
 
 const FormContainer = styled.div`
   display: flex;
-  flex-flow: row;
-  justify-content: center;
-  width: 100vw;
-  height: 100vh;
-
-`;
-
-const Container = styled.div`
-  display: flex;
-  flex-flow: column wrap;
+  flex-direction: column;
   align-items: center;
-  width: 70vw;
-  
 
   input {
     height: 3rem;
@@ -49,6 +38,7 @@ const Container = styled.div`
   }
 `;
 
+
 const Label = styled.label`
   font-size: 1.5rem;
   font-family: Inconsolata;
@@ -65,37 +55,33 @@ const Signup: NextPage = () => {
         <title>login</title>
       </Head>
       <FormContainer>
-        <Container>
-          <Label>first name</Label>
-          <input />
-          <Label>last name</Label>
-          <input />
-          <Label>email</Label>
-          <input />
-          <Label>username</Label>
-          <input />
-        </Container>
-        <Container>
-          <Label>password</Label>
-          <input type='password' />
-          <Label>confirm password</Label>
-          <input type='password' />
-          <div className='button-container'>
-            {/* login button */}
-            {/* <Button 
-              variant='primary' 
-              inverse={false}
-              whileHover={{ scale: 1.1 }}
-            >register</Button>
-            <Link href="/login" passHref>
-                <Button 
-                  variant='secondary' 
-                  inverse={false}
-                  whileHover={{ scale: 1.1 }}
-                >go back</Button>
-            </Link> */}
-          </div>
-        </Container>
+        <Label>first name</Label>
+        <input />
+        <Label>last name</Label>
+        <input />
+        <Label>email</Label>
+        <input />
+        <Label>username</Label>
+        <input />
+        <Label>password</Label>
+        <input type='password' />
+        <Label>confirm password</Label>
+        <input type='password' />
+        <div className='button-container'>
+          {/* login button */}
+          <Button 
+            variant='primary' 
+            inverse={false}
+            whileHover={{ scale: 1.1 }}
+          >register</Button>
+          <Link href="/login" passHref>
+              <Button 
+                variant='secondary' 
+                inverse={false}
+                whileHover={{ scale: 1.1 }}
+              >go back</Button>
+          </Link>
+        </div>
       </FormContainer>
     </AuthLayout>
   )
