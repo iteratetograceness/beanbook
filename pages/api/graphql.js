@@ -1,10 +1,12 @@
 /* eslint-disable import/no-anonymous-default-export */
 const { graphql, buildSchema } = require('graphql');
 const { makeExecutableSchema } = require('@graphql-tools/schema');
+import jwt from 'jsonwebtoken'
+import { compareSync, hashSync } from 'bcrypt'
 const { Pool } = require('pg');
 require('dotenv').config();
 
-const { goTrace } = require('../utils/trace.js');
+const { goTrace } = require('../../utils/trace.js');
 
 // const { envelop, useSchema, useTiming } = require('@envelop/core');
 
@@ -13,18 +15,29 @@ const pool = new Pool({connectionString});
 
 const typeDefs = buildSchema(`
     type User {
-        id: ID
-        name: String
-        username: String
-        password: String
-        email: String
+        id: ID!
+        firstName: String!
+        lastName: String!
+        username: String!
+        password: String!
+        email: String! 
         avatar_url: String
+    }
+
+    type AuthToken {
+      token: String!
     }
 
     type Query {
         getUsers: [User]
-        getUser(id: ID!): User
-    }`);
+        getUser(username: String!): User
+    }
+    
+    type Mutation {
+      signup(id: ID!, firstName: String!, lastName: String!, username: String!, password: String!, email: String!, avatar_url: String): AuthToken
+      login(username: String!, password: String!): AuthToken
+    }`
+    );
 
 // const getEnveloped = envelop({
 //   plugins: [useSchema(typeDefs), useTiming()],
@@ -45,10 +58,51 @@ const resolvers =
       },
       getUser: async (root, args, context, info) => {
         try {
-          const id = args.id;
-          const query = `SELECT * FROM users WHERE id = $1`;
-          const users = await pool.query(query, [id]);
+          const username = args.username;
+          const query = `SELECT * FROM users WHERE username = $1`;
+          const users = await pool.query(query, [username]);
           return users.rows[0];
+        } catch (error) {
+          return error;
+        }
+      }
+    },
+    Mutation: {
+      signup: async (root, args, context, info) => {
+        args.password = hashSync(args.password, 10);
+        try {
+          const query = `INSERT INTO users (id, firstName, lastName, username, password, email, avatar_url) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
+          const users = await pool.query(query, [args.id, args.firstName, args.lastName, args.username, args.password, args.email, args.avatar_url]);
+          const { id, username } = users.rows[0];
+          return {
+            token: jwt.sign({ id, username }, process.env.JWT_SECRET, {
+              expiresIn: '30d',
+            }),
+          }
+        } catch (error) {
+          return error;
+        }
+      },
+      login: async (root, args, context, info) => {
+        try {
+          const query = `SELECT * FROM users WHERE username = $1`;
+          const users = await pool.query(query, [args.username]);
+          const user = users.rows[0];
+          if (user && compareSync(args.password, user.password)) {
+            const token = jwt.sign({
+              id: user.id,
+              username: user.username,
+              email: user.email,
+              avatar_url: user.avatar_url
+            }, process.env.JWT_SECRET);
+            return {
+              token
+            }
+          } else {
+            return {
+              error: 'Invalid username/password'
+            }
+          }
         } catch (error) {
           return error;
         }
@@ -57,30 +111,16 @@ const resolvers =
   }
 ;
 
-// const loggingMiddleware = async (resolve, root, args, context, info) => {
-//   context.path.push(info.path.key);
-//   const startTime = process.hrtime();
-//   const result = await resolve(root, args, context, info);
-//   const endTime = Date.now();
-//   const resolverData = {
-//     parentType: info.parentType,
-//     fieldName: info.fieldName,
-//     startTime,
-//     endTime,
-//     returnValue: result,
-//   };
-//   console.log(context.path);
-//   //console.log(resolverData);
-//   return result;
-// }
-
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 
 export default async (req, res) => {
   const query = req.body.query;
-  const response = await goTrace(
+  const response = await graphql(
     schema,
     query,
+    null,
+    null,
+    req.body.variables,
   );
   return res.send(JSON.stringify(response));
 };

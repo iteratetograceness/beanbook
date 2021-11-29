@@ -1,10 +1,13 @@
 import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
+import Button from './button';
+import { useAuth } from '../lib/auth';
+import { useRouter } from 'next/router';
 
 const Nav = styled.nav`
   display: grid;
-  grid-template-columns: 6fr 1fr 1fr 1fr;
+  grid-template-columns: 6fr 1fr 1fr 1fr 1fr;
   margin: 2em 1.5em;
   
   a {
@@ -19,8 +22,9 @@ const Nav = styled.nav`
 
   .right-nav {
     font-family: Inconsolata;
-    justify-self: end;
+    justify-self: center;
     align-self: center;
+    margin-right: 1em;
   }
 
   .right-nav:hover {
@@ -28,9 +32,31 @@ const Nav = styled.nav`
     text-underline-offset: 7px;
     text-decoration-thickness: 3px;
   }
+
+  p.right-nav {
+    margin-right: 0;
+  }
+
+  p.right-nav:hover {
+    text-decoration: none;
+  }
+
+  button {
+    margin-left: .5rem;
+  }
 `;
 
-const NavBar: FunctionComponent = () => (
+const NavBar: FunctionComponent = () => {
+  const { isSignedIn, signOut } = useAuth()
+  const router = useRouter();
+  console.log(isSignedIn());
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push('/login');
+  }
+
+  return (
   <Nav>
     <Link href="/">
       <a className='logo'>beanbook</a>
@@ -47,7 +73,17 @@ const NavBar: FunctionComponent = () => (
     <Link href="/" >
       <a className='right-nav'>my profile</a>
     </Link>
+
+    {isSignedIn() && 
+    <Button 
+      inverse='false'
+      variant='primary' 
+      onClick={handleSignOut} 
+      whileHover={{ scale: 1.1 }}
+    >
+      <p className='right-nav'>logout</p>
+    </Button>}
   </Nav>
-)
+)}
 
 export default NavBar;

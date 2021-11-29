@@ -1,4 +1,5 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
+import { Router } from 'next/router';
 import Head from 'next/head';
 import styled from 'styled-components';
 
@@ -35,9 +36,6 @@ const AuthLayout = ({ children, title = 'beanbook' }: Props) => (
          <h1>beanbook</h1>
         </header>
         {children}
-        <footer>
-          {/* <span>footer</span> */}
-        </footer>
     </Container>
 )
 

@@ -71,13 +71,13 @@ const Signup: NextPage = () => {
           {/* login button */}
           <Button 
             variant='primary' 
-            inverse={false}
+            inverse='false'
             whileHover={{ scale: 1.1 }}
           >register</Button>
           <Link href="/login" passHref>
               <Button 
                 variant='secondary' 
-                inverse={false}
+                inverse='false'
                 whileHover={{ scale: 1.1 }}
               >go back</Button>
           </Link>

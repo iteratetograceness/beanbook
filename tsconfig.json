@@ -23,7 +23,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "pages/api/graphql.js", "server/index.js"  ],
+, "pages/api/graphql.js", "server/index.js", "lib/auth.js"  ],
   "exclude": [
     "node_modules"
   ]
