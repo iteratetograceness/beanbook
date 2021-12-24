@@ -12,8 +12,8 @@ const pool = new Pool({connectionString});
 const typeDefs = buildSchema(`
     type User {
         id: ID!
-        firstName: String!
-        lastName: String!
+        firstname: String!
+        lastname: String!
         username: String!
         password: String!
         email: String! 
@@ -26,11 +26,11 @@ const typeDefs = buildSchema(`
 
     type Query {
         getUsers: [User]
-        getUser(username: String!): User
+        getUser(username: String!): User!
     }
     
     type Mutation {
-      signup(id: ID!, firstName: String!, lastName: String!, username: String!, password: String!, email: String!, avatar_url: String): Boolean
+      signup(id: ID!, firstname: String!, lastname: String!, username: String!, password: String!, email: String!, avatar_url: String): Boolean
       login(username: String!, password: String!): AuthToken
     }`
     );
@@ -62,8 +62,8 @@ const resolvers =
       signup: async (root, args, context, info) => {
         args.password = hashSync(args.password, 10);
         try {
-          const query = `INSERT INTO users (id, firstName, lastName, username, password, email, avatar_url) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
-          const users = await pool.query(query, [args.id, args.firstName, args.lastName, args.username, args.password, args.email, args.avatar_url]);
+          const query = `INSERT INTO users (id, firstname, lastname, username, password, email, avatar_url) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
+          const users = await pool.query(query, [args.id, args.firstname, args.lastname, args.username, args.password, args.email, args.avatar_url]);
           //const { id, username } = users.rows[0];
           return true
         } catch (error) {

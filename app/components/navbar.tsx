@@ -6,10 +6,11 @@ import { useAuth } from '../lib/auth';
 import { useRouter } from 'next/router';
 import { useMediaQuery } from "react-responsive";
 import { stack as Menu } from 'react-burger-menu';
+import { SettingFilled } from '@ant-design/icons';
 
 const Nav = styled.nav`
   display: grid;
-  grid-template-columns: 6fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 6fr 1fr 1fr .5fr 1fr;
   margin: 2em 1.5em;
   
   a {
@@ -43,13 +44,17 @@ const Nav = styled.nav`
     text-decoration: none;
   }
 
+  icon {
+    width: 20px
+  }
+
   button {
     margin-left: .5rem;
   }
 `;
 
 const NavBar: FunctionComponent = () => {
-  const isMobile = useMediaQuery({ maxWidth: 580 });
+  const isMobile = useMediaQuery({ maxWidth: 600 });
 
   const { isSignedIn, signOut } = useAuth()
   const router = useRouter();
@@ -74,7 +79,7 @@ const NavBar: FunctionComponent = () => {
         
             <a className='right-nav' href='/home'>my beans</a>
         
-            <a className='right-nav' href='/home'>my profile</a>
+            <a className='right-nav' href='/home'>settings</a>
         
             {isSignedIn() && 
               <a className='right-nav' onClick={handleSignOut} >logout</a>
@@ -99,7 +104,7 @@ const NavBar: FunctionComponent = () => {
     </Link>
 
     <Link href="/" >
-      <a className='right-nav'>my profile</a>
+      <a className='right-nav icon'><SettingFilled spin={true} style={{ fontSize: '20px' }}/></a>
     </Link>
 
     {isSignedIn() && 

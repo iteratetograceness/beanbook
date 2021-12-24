@@ -27,9 +27,9 @@ export const useAuth = () => {
 
 function useProvideAuth() {
   const [authToken, setAuthToken] = useState('unverified');
+  const [userName, setUserName] = useState('');
 
   const isSignedIn = () => {
-    console.log('Inside isSignedIn: ', authToken)
     if (authToken !== 'unverified') {
       return true
     } else {
@@ -72,10 +72,9 @@ function useProvideAuth() {
       variables: { username, password },
     })
 
-    console.log('Inside signIn:', result)
-
     if (result?.data?.login?.token) {
       setAuthToken(result.data.login.token);
+      setUserName(username);
     }
   }
 
@@ -83,10 +82,33 @@ function useProvideAuth() {
     setAuthToken('unverified')
   }
 
+  const getUserName = async () => {
+    const client = createApolloClient()
+    const query = gql`
+      query getUser($username: String!) {
+        getUser(username: $username) {
+          firstname
+        }
+      }
+    `;
+
+    const result = await client.query({
+      query,
+      variables: { username: userName },
+    })
+
+    console.log('Inside getUser:', result)
+
+    if (result?.data?.getUser?.firstname) {
+      return result.data.getUser.firstname
+    }
+  }
+
   return {
     isSignedIn,
     signIn,
     signOut,
     createApolloClient,
+    getUserName
   }
 }

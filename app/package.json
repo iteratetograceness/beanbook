@@ -8,6 +8,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.7.0",
     "@apollo/client": "^3.5.5",
     "@auth0/nextjs-auth0": "^1.6.1",
     "@envelop/core": "^1.6.2",

@@ -15,8 +15,8 @@ export default async function registerUser(data) {
   });
 
   const mutation = gql`
-    mutation signup($id: ID!, $firstName: String!, $lastName: String!, $username: String!, $password: String!, $email: String!, $avatar_url: String) {
-      signup(id: $id, firstName: $firstName, lastName: $lastName, username: $username, password: $password, email: $email, avatar_url: $avatar_url) 
+    mutation signup($id: ID!, $firstname: String!, $lastName: String!, $username: String!, $password: String!, $email: String!, $avatar_url: String) {
+      signup(id: $id, firstname: $firstname, lastName: $lastName, username: $username, password: $password, email: $email, avatar_url: $avatar_url) 
     }
   `;
 

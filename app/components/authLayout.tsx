@@ -22,6 +22,7 @@ const Container = styled.div`
 
   h1 {
     margin: 1rem 0;
+    font-family: Volkhov;
   }
 `;
 

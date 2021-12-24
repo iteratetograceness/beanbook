@@ -74,15 +74,15 @@ const SignUpForm: FunctionComponent = () => {
       <Label>first name</Label>
       <input 
         type='text'
-        {...register('firstName')}
+        {...register('firstname')}
       />
-      <p>{ errors.firstName?.message }</p>
+      <p>{ errors.firstname?.message }</p>
       <Label>last name</Label>
       <input 
         type='text' 
-        {...register('lastName')}
+        {...register('lastname')}
       />
-      <p>{ errors.lastName?.message }</p>
+      <p>{ errors.lastname?.message }</p>
       <Label>email</Label>
       <input 
         type='text' 
