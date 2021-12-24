@@ -1,9 +1,29 @@
 import { useAuth } from '../lib/auth'
 import { useState, useEffect } from 'react'
 import styled from 'styled-components'
+import { SmileOutlined } from '@ant-design/icons';
 
 const Container = styled.div`
-  margin: 0 1.5em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+  margin-bottom: 35px;
+  margin-left: 15px;
+  width: 130px;
+  color: ${props => props.theme.colors.light};
+  border-radius: 2rem;
+  background-color: ${props => props.theme.colors.darkish};
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  span {
+    font-weight: bold;
+  }
 `;
 
 function Greeting() {
@@ -21,7 +41,8 @@ function Greeting() {
  
   return (
     <Container>
-      <h1>Hello { name.toUpperCase() }</h1>
+      <SmileOutlined style={{ fontSize: '25px' }}/>
+      <p>hello <span>{ name.toLowerCase() }</span>!</p>
     </Container>
   )
 }

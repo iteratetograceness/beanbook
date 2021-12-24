@@ -11,7 +11,7 @@ import { SettingFilled } from '@ant-design/icons';
 const Nav = styled.nav`
   display: grid;
   grid-template-columns: 6fr 1fr 1fr .5fr 1fr;
-  margin: 2em 1.5em;
+  margin: 2em 2.5em;
   
   a {
     font-family: Volkhov;
@@ -31,9 +31,8 @@ const Nav = styled.nav`
   }
 
   .right-nav:hover {
-    text-decoration: underline;
-    text-underline-offset: 5px;
-    text-decoration-thickness: 2px;
+    font-weight: bold;
+    transition: all ease-in-out .6s;
   }
 
   p.right-nav {
@@ -91,7 +90,7 @@ const NavBar: FunctionComponent = () => {
 
   return (
   <Nav>
-    <Link href="/">
+    <Link href="/home">
       <a className='logo'>beanbook</a>
     </Link>
 
