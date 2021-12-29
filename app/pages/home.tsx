@@ -4,15 +4,30 @@ import AuthLayout from "../components/authLayout";
 import Link from "next/link";
 import Button from "../components/button";
 import HomePage from "../components/homepage";
+import { useState, useEffect } from "react";
+import Cookies from 'js-cookie'
+import jwt from 'jsonwebtoken'
 
 const Home = () => {
-  const { isSignedIn } = useAuth();
 
-  return (
-    <>
-      {!isSignedIn() && 
+  const [name, setName] = useState('')
+
+  useEffect(() => {
+    const auth_token = Cookies.get('token');
+    const decoded: any = jwt.decode(auth_token as any);
+    setName(decoded.firstname)
+  }, [name, setName])
+
+  if (name) {
+    return (
+      <Layout>
+        <HomePage name={name} />
+      </Layout>
+    )
+  } else {
+    return (
       <AuthLayout>
-        <p>um...you're not logged in</p>
+        <p>{"um...you aren't not logged in"}</p>
         <Link href='/login' passHref>
           <Button 
             inverse='false' 
@@ -21,14 +36,8 @@ const Home = () => {
           >go back</Button>
         </Link>
       </AuthLayout>
-      }
-      {isSignedIn() && 
-      <Layout>
-        <HomePage/>
-      </Layout>
-      }
-    </>
-  )
+    )
+  }
 }
 
 export default Home

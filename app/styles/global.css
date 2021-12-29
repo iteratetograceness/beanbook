@@ -1,12 +1,14 @@
 :root {
-  height: 100vh;
   width: 100vw;
+  max-width: 100%;
   overflow-x: hidden;
 }
 
 body {
   margin: 0;
   padding: 0;
+  height: 100vh;
+  width: 100vw;
   font-family: "Inconsolata", sans-serif;
 }
 
@@ -15,66 +17,43 @@ main {
   flex-shrink: 0
 }
 
-.bm-overlay {
-  background: #433f3c !important;
-  border-top-left-radius: 3rem;
-  border-bottom-left-radius: 3rem;
-  height: 70vh !important;
-  width: 60vw !important;
-  overflow: hidden !important;
+.bm-item:active { 
+  background-color: #ded9d1;
+  color: #433f3c;
 }
 
-.bm-menu {
-  right: 0 !important;
-  overflow: hidden !important;
-}
-
-.bm-menu-wrap {
-  position: relative;
-  width: 40vw !important;
-  height: 60vh !important;
-  margin: 1.5rem 0;
+.no-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  padding: 0.1rem 0.7rem;
+  margin-right: 0.5rem;
+  font-size: .8rem;
+  font-weight: bold;
+  border-radius: 2rem;
   border: none;
-  overflow: hidden;
+  height: 25px;
+  margin-top: .5rem;
+  background-color: #433f3c;
+  color: #ded9d1;
+  transition: all 200ms ease-in-out;
 }
 
-.bm-burger-button {
-  position: fixed;
-  width: 30px;
-  height: 30px;
-  right: 36px;
-  top: 36px;
-}
-
-.bm-burger-bars {
-  background: #433f3c;
-}
-
-.bm-burger-bars-hover {
-  background: transparent;
-}
-
-.bm-cross {
-  background: #ded9d1 !important;
-}
-
-.bm-cross-button {
-  right: 20px !important;
-  top: 0px !important;
-}
-
-.bm-item-list {
-  width: 50%;
-  padding: 1rem;
-  margin-left: 10px;
-  overflow: hidden;
-}
-
-/* Individual item */
-.bm-item {
-  display: inline-block;
-  color: #ded9d1 !important;
-  inline-size: auto;
-  font-size: 1.1rem;
-  margin-bottom: 25px;
+.filter-toggled {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  padding: 0.1rem 0.7rem;
+  margin-right: 0.5rem;
+  font-size: .8rem;
+  font-weight: bold;
+  border-radius: 2rem;
+  border: none;
+  height: 25px;
+  margin-top: .5rem;
+  background-color: #fff;
+  color: #252222;
+  transition: all 200ms ease-in-out;
 }

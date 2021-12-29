@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 import { registerSchema } from "../lib/yupSchemas";
-import registerUser from "../lib/register";
+import { useAuth } from "../lib/auth";
 import Button from './button';
 import Link from 'next/link';
 
@@ -59,14 +59,18 @@ const Label = styled.label`
 
 const SignUpForm: FunctionComponent = () => {
   const router = useRouter();
+  const { signUp } = useAuth();
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema)
   });
 
   const handleRegister = async (data: any) => {
-    console.log(data)
-    await registerUser(data);
-    router.push('/login');
+    const res = await signUp(data);
+    if (res === 'success') {
+      router.push('/login');
+    } else {
+      alert(res);
+    }
   };
 
   return (

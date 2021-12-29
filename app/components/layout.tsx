@@ -11,16 +11,23 @@ const Container = styled.div`
     padding: 0;
     width: 100vw;
     height: 100%;
+    max-width: 100%;
     min-height: 100vh;
-    align-items: stretch
 `;
+
+const Main = styled.main`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`
 
 type Props = {
     children?: ReactNode
     title?: string
 }
 
-const Layout = ({ children, title = 'beanbook' }: Props) => (
+const Layout = ({ children, title = 'beanbook' }: Props) => {
+    return (
     <Container>
         <Head>
             <title>{title}</title>
@@ -30,11 +37,13 @@ const Layout = ({ children, title = 'beanbook' }: Props) => (
         <header>
          <NavBar />
         </header>
-        <main>
+        <Main>
             {children}
-        </main>
+        </Main>
         <Footer/>
     </Container>
-)
+    )
+}
+
 
 export default Layout

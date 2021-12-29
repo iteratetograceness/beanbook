@@ -1,4 +1,4 @@
-import React, { useState, useContext, createContext } from 'react'
+import { useContext, createContext } from 'react'
 import {
   ApolloProvider,
   ApolloClient,
@@ -6,6 +6,8 @@ import {
   HttpLink,
   gql,
 } from '@apollo/client';
+import { v1 as uuid } from 'uuid';
+import Cookies from 'js-cookie'
 
 const AuthContext = createContext();
 
@@ -26,28 +28,38 @@ export const useAuth = () => {
 }
 
 function useProvideAuth() {
-  const [authToken, setAuthToken] = useState('unverified');
-  const [userName, setUserName] = useState('');
+
+  const getName = () => {
+    if (typeof window !== 'undefined') {
+      const item = localStorage.getItem('user_name')
+      return item
+    } else return ' there'
+  }
 
   const isSignedIn = () => {
-    if (authToken !== 'unverified') {
-      return true
-    } else {
-      return false
+    if (typeof window !== 'undefined') {
+
+      const item = localStorage.getItem('auth_token')
+      if (item) {
+        return true
+      } else {
+        return false
+      }
     }
   }
 
   const getAuthHeaders = () => {
-    if (authToken === 'unverified') return null
-
+    const token = Cookies.get('token')
     return {
-      authorization: `Bearer ${authToken}`,
+      authorization: `Bearer ${token}`
     }
   }
 
   const createApolloClient = () => {
+
     const link = new HttpLink({
-      uri: 'http://localhost:3000/api/graphql',
+      uri: '/api/graphql',
+      credentials: 'include',
       headers: getAuthHeaders(),
     })
 
@@ -58,57 +70,64 @@ function useProvideAuth() {
   }
 
   const signIn = async ({ username, password }) => {
+    
     const client = createApolloClient()
-    const LoginMutation = gql`
-      mutation signin($username: String!, $password: String!) {
+    const mutation = gql`
+      mutation Login($username: String!, $password: String!) {
         login(username: $username, password: $password) {
-          token
+          token 
         }
       }
     `;
 
     const result = await client.mutate({
-      mutation: LoginMutation,
+      mutation,
       variables: { username, password },
     })
 
-    if (result?.data?.login?.token) {
-      setAuthToken(result.data.login.token);
-      setUserName(username);
+    if (result?.data?.login?.token !== 'invalid') {
+      const token = result.data.login.token
+      Cookies.set('token', token, { expires: 7 })
+    } else {
+      return { error: 'Invalid username/password' }
     }
   }
 
   const signOut = () => {
-    setAuthToken('unverified')
+    Cookies.remove('token')
   }
 
-  const getUserName = async () => {
+  const signUp = async (data) => {
+
     const client = createApolloClient()
-    const query = gql`
-      query getUser($username: String!) {
-        getUser(username: $username) {
-          firstname
-        }
+    const mutation = gql`
+    mutation Mutation($signupId: ID!, $firstname: String!, $lastname: String!, $username: String!, $password: String!, $email: String!) {
+      signup(id: $signupId, firstname: $firstname, lastname: $lastname, username: $username, password: $password, email: $email) {
+        validation
+        message
       }
+    }
     `;
 
-    const result = await client.query({
-      query,
-      variables: { username: userName },
+    const result = await client.mutate({
+      mutation,
+      variables: { ...data, signupId: uuid().toString() },
     })
 
-    console.log('Inside getUser:', result)
-
-    if (result?.data?.getUser?.firstname) {
-      return result.data.getUser.firstname
+    if (result?.data?.signup?.validation) {
+      return 'success'
+    } else {
+      return result.data.signup.message
     }
+
   }
 
   return {
     isSignedIn,
     signIn,
     signOut,
+    getAuthHeaders,
     createApolloClient,
-    getUserName
+    signUp
   }
 }

@@ -19,12 +19,6 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": [
-    "app/next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
-, "pages/api/graphql.js", "server/index.js", "lib/auth.js"  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": [ "app/next-env.d.ts", "**/*.ts", "**/*.tsx" ],
+  "exclude": [ "node_modules" ],
 }

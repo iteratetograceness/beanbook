@@ -59,14 +59,15 @@ const Label = styled.label`
 
 const LoginForm: FunctionComponent = () => {
   const router = useRouter();
+  const { signIn } = useAuth()
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema)
   });
-  const { signIn } = useAuth()
-
+  
   const handleLogin = async (data: any) => {
-    await signIn(data);
-    router.push('/home');
+    const res = await signIn(data)
+    if (typeof res === 'object') alert(res.error)
+    else router.push('/home');
   };
 
   return (

@@ -7,7 +7,8 @@ import Link from 'next/link';
 
 const Letter = styled(motion.span)`
   font-size: 5rem;
-  color: #ded9d1
+  color: #ded9d1;
+  font-family: Volkhov;
 `;
 
 const Button = styled(motion.button)`
@@ -71,7 +72,7 @@ const buttonAni = {
   }
 };
 
-const AnimatedLetters = ({ title }) => {
+const AnimatedLetters = ({ title }: { title: string }) => {
   const titleArr = [...title];
 
   return(

@@ -14,3 +14,20 @@ export const registerSchema = yup.object().shape({
   password: yup.string().min(4).required(),
   confirmPassword: yup.string().oneOf([yup.ref("password")], "Passwords must match").required(),
 });
+
+export const beanSchema = yup.object().shape({
+  origin_name: yup.string().required(),
+  price: yup.number(),
+  roaster: yup.string(),
+  producer: yup.string(),
+  roast_date: yup.date(),
+  variety: yup.string(),
+  process: yup.string(),
+  rating: yup.number().min(1).max(5).required(),
+  notes: yup.string(),
+  brew_method: yup.array().of(yup.string()),
+  taste_tags: yup.array().of(yup.string()),
+  created_on: yup.date().default(function () {
+    return new Date();
+  }),
+});
