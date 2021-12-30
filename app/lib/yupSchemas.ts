@@ -1,6 +1,5 @@
 import * as yup from "yup";
 
-// create a new schema file later
 export const loginSchema = yup.object().shape({
   username: yup.string().required(),
   password: yup.string().min(4).required(),

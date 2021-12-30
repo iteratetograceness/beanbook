@@ -1,11 +1,3 @@
-import Cookies from "js-cookie"
-import jwt from 'jsonwebtoken'
-import { v1 as uuid } from 'uuid'
-
-const auth_token = Cookies.get('token');
-const decoded: any = jwt.decode(auth_token as any);
-const user_id = decoded.id;
-
 export const DefaultEntry = {
   id: '',
   userid: '',
@@ -20,17 +12,20 @@ export const DefaultEntry = {
   rating: 3,
   notes: '',
   brew_method: [],
-  taste_tags: [],
-  created_on: null
+  taste_tags: []
 }
 
-export const EntryReducer = (entry: DefaultEntry , { type, payload }: { type: string, payload: DefaultEntry }) => {
+export const EntryReducer = (entry: DefaultEntry, { type, payload }: { type: string, payload: any }) => {
   switch (type) {
     case 'UPDATE_ENTRY':
       return {
         ...entry,
         ...payload
       }
+
+    case 'ADD_ENTRY':
+
+    case 'RESET_ENTRY':
 
     default:
       return entry
@@ -52,5 +47,4 @@ export interface DefaultEntry {
   notes?: string,
   brew_method?: [string] | never[],
   taste_tags?: [string] | never[],
-  created_on: Date | null
 }

@@ -38,10 +38,7 @@ const Label = styled.label`
   font-family: Inconsolata;
 `;
 
-function EntryPageOne() {
-  const { register, formState: { errors } } = useForm({
-    resolver: yupResolver(schema)
-  });
+function EntryPageOne({ register }: { register: Function }) {
 
   return (
     <Container>
@@ -51,14 +48,12 @@ function EntryPageOne() {
         type='text'
         {...register('origin_name')}
       />
-      <p>{ errors.origin_name?.message }</p>
 
       <Label>price</Label>
       <input 
         type='number'
         {...register('price')}
       />
-      <p>{ errors.price?.message }</p>
 
       <Label>roaster</Label>
       <input 

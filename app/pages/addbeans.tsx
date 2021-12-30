@@ -12,6 +12,10 @@ import EntryPageThree from '../components/entry-page-three';
 import { LeftCircleFilled, RightCircleFilled } from '@ant-design/icons';
 import Button from '../components/button';
 import { EntryReducer, DefaultEntry } from '../lib/reducers/entryReducer';
+import { v1 as uuid } from 'uuid';
+import { useAuth } from '../lib/auth';
+import { gql, useMutation } from '@apollo/client';
+import jwt from 'jsonwebtoken';
 
 const schema = beanSchema
 
@@ -123,7 +127,20 @@ function AddBeans() {
   const [ brew_method, setBrewMethod ] = useState([])
   const [ taste_tags, setTasteTags ] = useState([])
   const [ entry, setEntry ] = useReducer(EntryReducer, DefaultEntry)
-  const { handleSubmit } = useForm({
+  const { createApolloClient } = useAuth()
+
+  const ADD_ENTRY = gql`
+      mutation Mutation($entry: EntryInput) {
+        addEntry(entry: $entry) {
+          validation
+          message
+        }
+      }
+    `
+  const [addEntryMutation, { data, loading, error }] = useMutation(ADD_ENTRY);
+
+
+  const { register, getValues } = useForm({
     resolver: yupResolver(schema)
   });
 
@@ -132,17 +149,30 @@ function AddBeans() {
   const addEntry = async (e: MouseEvent) => {
     e.preventDefault()
 
-    if (page === 1) {
-      const new_entry = {
-        ...entry,
-        rating: stars,
+    let newEntry = entry
+    const values = getValues()
+    const auth_token = Cookies.get('token');
+    const decoded: any = jwt.decode(auth_token as any);
 
-      }
+    newEntry = {
+      ...newEntry,
+      ...values,
+      price: values.price ? Number(values.price) : null,
+      roast_date: values.roast_date ? new Date(values.roast_date) : null,
+      brew_method: brew_method,
+      taste_tags: taste_tags,
+      rating: stars,
+      userid: decoded.id,
+      id: uuid().toString()
     }
-    
-    console.log(entry)
-    // data = { ...data, rating: stars, userid: Cookies.get('userid'), favorited: false, id: uuid() }
-    // console.log(data)
+
+    addEntryMutation({ variables: { entry: newEntry } })
+      .then(res => console.log(res))
+      .then(() => router.push({
+        pathname: `/entry/${newEntry.origin_name}`,
+        query: { id: newEntry.id },
+      }))
+      .catch(err => alert(err.message))
   }
 
   useEffect(() => {
@@ -152,7 +182,6 @@ function AddBeans() {
   })
 
   const nextPage = () => {
-    console.log(entry)
     setPage(prev => page + 1)
   }
 
@@ -171,9 +200,9 @@ function AddBeans() {
             </div>
           </div>
 
-          <form className='second-col' onSubmit={(e) => addEntry(e)} id='entry-form'>
-            { page === 1 && <EntryPageOne /> }
-            { page === 2 && <EntryPageTwo stars={stars} setStars={setStars}/> }
+          <form className='second-col' id='entry-form'>
+            { page === 1 && <EntryPageOne register={register} /> }
+            { page === 2 && <EntryPageTwo stars={stars} setStars={setStars} register={register} /> }
             { page === 3 && <EntryPageThree brew_method={brew_method} setBrewMethod={setBrewMethod} taste_tags={taste_tags} setTasteTags={setTasteTags} /> }
             <ButtonContainer>
               { page > 1 && page <= 3 && <LeftCircleFilled style={arrowStyles} onClick={prevPage} /> }
@@ -181,7 +210,14 @@ function AddBeans() {
                 style={arrowStyles} 
                 onClick={nextPage} 
               /> }
-              { page === 3 && <Button inverse='false' variant='primary' type='submit' form='entry-form'>Submit</Button> }
+              { page === 3 && <Button 
+                inverse='false' 
+                variant='primary' 
+                form='entry-form'
+                onClick={(e: any) => addEntry(e)}
+              >
+                Submit
+              </Button> }
             </ButtonContainer>
           </form>
         </Container>

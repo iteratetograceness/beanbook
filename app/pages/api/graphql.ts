@@ -3,7 +3,6 @@ import Cors from "micro-cors";
 import { ApolloServer } from "apollo-server-micro";
 import { typeDefs } from "./schemas";
 import { resolvers } from "./resolvers";
-import jwt from "jsonwebtoken";
 
 const context = ({ req }: { req: any }) => {
   return {
@@ -17,7 +16,7 @@ const server = new ApolloServer({ typeDefs, resolvers, context });
 
 const startServer = server.start();
 
-export default cors(async (req, res) => {
+export default cors(async (req, res) => { 
 
   if (req.method === "OPTIONS") {
     res.end();

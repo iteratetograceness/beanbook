@@ -67,11 +67,8 @@ const Label = styled.label`
   font-family: Inconsolata;
 `;
 
-function EntryPageOne({ stars, setStars }: { stars: number, setStars: Function }) {
-  const { register, formState: { errors } } = useForm({
-    resolver: yupResolver(schema)
-  });
-
+function EntryPageOne({ stars, setStars, register }: { stars: number, setStars: Function, register: Function }) {
+  
   const handleRating = (e: MouseEvent) => {
     e.preventDefault()
     const star_num = e.currentTarget.attributes['name' as any].value
@@ -102,8 +99,6 @@ function EntryPageOne({ stars, setStars }: { stars: number, setStars: Function }
         { starArr }
       </div>
 
-      <p>{ errors.rating?.message }</p>
-
       <Label>notes</Label>
       <textarea
         className='notes-input'
@@ -119,9 +114,8 @@ function EntryPageOne({ stars, setStars }: { stars: number, setStars: Function }
       <Label>variety</Label>
       <input 
         type='text'
-        {...register('price')}
+        {...register('variety')}
       />
-      <p>{ errors.price?.message }</p>
 
     </Container>
   )

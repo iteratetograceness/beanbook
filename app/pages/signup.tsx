@@ -19,7 +19,7 @@ const Signup: NextPage = () => {
   return (
     <AuthLayout>
       <Head>
-        <title>login</title>
+        <title>sign up</title>
       </Head>
       <SignUpForm/>
     </AuthLayout>

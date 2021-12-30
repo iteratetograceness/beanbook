@@ -29,23 +29,20 @@ export const useAuth = () => {
 
 function useProvideAuth() {
 
-  const getName = () => {
-    if (typeof window !== 'undefined') {
-      const item = localStorage.getItem('user_name')
-      return item
-    } else return ' there'
-  }
-
   const isSignedIn = () => {
-    if (typeof window !== 'undefined') {
+    // if (typeof window !== 'undefined') {
 
-      const item = localStorage.getItem('auth_token')
-      if (item) {
-        return true
-      } else {
-        return false
-      }
-    }
+    //   const item = localStorage.getItem('auth_token')
+    //   if (item) {
+    //     return true
+    //   } else {
+    //     return false
+    //   }
+    // }
+
+    const token = Cookies.get('token')
+    if (token) return true
+    else return false
   }
 
   const getAuthHeaders = () => {
