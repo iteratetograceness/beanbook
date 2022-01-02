@@ -87,7 +87,7 @@ const AnimatedLetters = ({ title }: AnimatedLettersProps) => {
 
   useEffect(() => {
     router.prefetch('/home')
-  }, [])
+  }, [router])
 
   return(
     <>

@@ -3,5 +3,8 @@
   "plugins": ["react", "react-hooks"],
   "globals": {
     "localStorage": true
+  },
+  "rules": {
+    "@next/next/no-html-link-for-pages": ["error", "/pages/"]
   }
 }

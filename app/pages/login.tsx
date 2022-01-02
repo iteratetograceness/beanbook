@@ -20,7 +20,7 @@ const Login: NextPage = () => {
 
   useEffect(() => {
     router.prefetch('/home')
-  }, [])
+  }, [router])
 
   return (
     <FixedAuthLayout>
