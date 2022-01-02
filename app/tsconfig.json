@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2015",
     "lib": [
       "dom",
       "dom.iterable",
@@ -17,8 +17,16 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
+    "downlevelIteration": true,
     "incremental": true
   },
-  "include": [ "app/next-env.d.ts", "**/*.ts", "**/*.tsx" ],
-  "exclude": [ "node_modules" ],
+  "include": [
+    "app/next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "app/lib/types/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

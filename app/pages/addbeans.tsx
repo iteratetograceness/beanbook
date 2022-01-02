@@ -1,11 +1,10 @@
-import { useEffect, useState, useReducer } from 'react'
+import { useState, useReducer } from 'react'
 import { useRouter } from 'next/router'
 import { useForm } from "react-hook-form";
-import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { beanSchema } from "../lib/yupSchemas";
 import Layout from '../components/layout';
 import styled from 'styled-components';
-import Cookies from 'js-cookie'
 import EntryPageOne from '../components/entry-page-one';
 import EntryPageTwo from '../components/entry-page-two';
 import EntryPageThree from '../components/entry-page-three';
@@ -13,9 +12,10 @@ import { LeftCircleFilled, RightCircleFilled } from '@ant-design/icons';
 import Button from '../components/button';
 import { EntryReducer, DefaultEntry } from '../lib/reducers/entryReducer';
 import { v1 as uuid } from 'uuid';
-import { useAuth } from '../lib/auth';
-import { gql, useMutation } from '@apollo/client';
-import jwt from 'jsonwebtoken';
+import { useSession } from "next-auth/react";
+import { useMutation } from '@apollo/client';
+import { ADD_ENTRY } from '../lib/queries';
+import Loading from '../components/loading';
 
 const schema = beanSchema
 
@@ -122,37 +122,25 @@ const ButtonContainer = styled.div`
 
 function AddBeans() {
   const router = useRouter()
+  const { data: session } = useSession()
   const [ page, setPage ] = useState(1)
   const [ stars, setStars ] = useState(1)
   const [ brew_method, setBrewMethod ] = useState([])
   const [ taste_tags, setTasteTags ] = useState([])
   const [ entry, setEntry ] = useReducer(EntryReducer, DefaultEntry)
-  const { createApolloClient } = useAuth()
 
-  const ADD_ENTRY = gql`
-      mutation Mutation($entry: EntryInput) {
-        addEntry(entry: $entry) {
-          validation
-          message
-        }
-      }
-    `
-  const [addEntryMutation, { data, loading, error }] = useMutation(ADD_ENTRY);
-
+  const [addEntryMutation, { loading, error }] = useMutation(ADD_ENTRY);
 
   const { register, getValues } = useForm({
     resolver: yupResolver(schema)
   });
-
-  // TODO: Function to handle going to a different page
 
   const addEntry = async (e: MouseEvent) => {
     e.preventDefault()
 
     let newEntry = entry
     const values = getValues()
-    const auth_token = Cookies.get('token');
-    const decoded: any = jwt.decode(auth_token as any);
+    const user_id = session?.user.user_id
 
     newEntry = {
       ...newEntry,
@@ -162,24 +150,27 @@ function AddBeans() {
       brew_method: brew_method,
       taste_tags: taste_tags,
       rating: stars,
-      userid: decoded.id,
+      userid: user_id,
       id: uuid().toString()
     }
 
     addEntryMutation({ variables: { entry: newEntry } })
-      .then(res => console.log(res))
-      .then(() => router.push({
-        pathname: `/entry/${newEntry.origin_name}`,
-        query: { id: newEntry.id },
-      }))
-      .catch(err => alert(err.message))
+      .then(res => {
+        if (!res.data.addEntry.validation || error) {
+          // TODO: Custom error popup/toast
+          alert(error || res.data.addEntry.message)
+        } else {
+          router.push({
+            pathname: `/entry/${newEntry.origin_name}`,
+            query: { id: newEntry.id },
+          })
+        }
+      })
+      .catch(err => {
+        // TODO: Custom error popup/toast
+        alert(err.message)
+      })
   }
-
-  useEffect(() => {
-    if (!Cookies.get('token')) {
-      router.push('/login')
-    }
-  })
 
   const nextPage = () => {
     setPage(prev => page + 1)
@@ -189,40 +180,44 @@ function AddBeans() {
     setPage(prev => page - 1)
   }
 
-  return (
-    <Layout>
-        <Container>
-          <div className="first-col-container">
-            <div className='first-col'>
-              <h1>+</h1>
-              <h1 className='new-keyword'>new</h1>
-              <h1>entry</h1>
+  if (loading) {
+    return <Loading/>
+  } else {
+      return (
+      <Layout>
+          <Container>
+            <div className="first-col-container">
+              <div className='first-col'>
+                <h1>+</h1>
+                <h1 className='new-keyword'>new</h1>
+                <h1>entry</h1>
+              </div>
             </div>
-          </div>
 
-          <form className='second-col' id='entry-form'>
-            { page === 1 && <EntryPageOne register={register} /> }
-            { page === 2 && <EntryPageTwo stars={stars} setStars={setStars} register={register} /> }
-            { page === 3 && <EntryPageThree brew_method={brew_method} setBrewMethod={setBrewMethod} taste_tags={taste_tags} setTasteTags={setTasteTags} /> }
-            <ButtonContainer>
-              { page > 1 && page <= 3 && <LeftCircleFilled style={arrowStyles} onClick={prevPage} /> }
-              { page < 3 && <RightCircleFilled 
-                style={arrowStyles} 
-                onClick={nextPage} 
-              /> }
-              { page === 3 && <Button 
-                inverse='false' 
-                variant='primary' 
-                form='entry-form'
-                onClick={(e: any) => addEntry(e)}
-              >
-                Submit
-              </Button> }
-            </ButtonContainer>
-          </form>
-        </Container>
-    </Layout>
-  )
+            <form className='second-col' id='entry-form'>
+              { page === 1 && <EntryPageOne register={register} /> }
+              { page === 2 && <EntryPageTwo stars={stars} setStars={setStars} register={register} /> }
+              { page === 3 && <EntryPageThree brew_method={brew_method} setBrewMethod={setBrewMethod} taste_tags={taste_tags} setTasteTags={setTasteTags} /> }
+              <ButtonContainer>
+                { page > 1 && page <= 3 && <LeftCircleFilled style={arrowStyles} onClick={prevPage} /> }
+                { page < 3 && <RightCircleFilled 
+                  style={arrowStyles} 
+                  onClick={nextPage} 
+                /> }
+                { page === 3 && <Button 
+                  inverse='false' 
+                  variant='primary' 
+                  form='entry-form'
+                  onClick={(e: any) => addEntry(e)}
+                >
+                  Submit
+                </Button> }
+              </ButtonContainer>
+            </form>
+          </Container>
+      </Layout>
+    )
+  }
 }
 
 export default AddBeans

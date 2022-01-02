@@ -30,18 +30,10 @@ export const useAuth = () => {
 function useProvideAuth() {
 
   const isSignedIn = () => {
-    // if (typeof window !== 'undefined') {
-
-    //   const item = localStorage.getItem('auth_token')
-    //   if (item) {
-    //     return true
-    //   } else {
-    //     return false
-    //   }
-    // }
-
-    const token = Cookies.get('token')
-    if (token) return true
+    // const token = Cookies.get('token')
+    // if (token) return true
+    // else return false
+    if (isAuth) return true
     else return false
   }
 
@@ -61,6 +53,7 @@ function useProvideAuth() {
     })
 
     return new ApolloClient({
+      ssrMode: typeof window === 'undefined',
       link,
       cache: new InMemoryCache(),
     })
@@ -84,7 +77,7 @@ function useProvideAuth() {
 
     if (result?.data?.login?.token !== 'invalid') {
       const token = result.data.login.token
-      Cookies.set('token', token, { expires: 7 })
+      Cookies.set('token', token, { expires: 7, httpOnly: true })
     } else {
       return { error: 'Invalid username/password' }
     }

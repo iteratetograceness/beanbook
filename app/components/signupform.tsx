@@ -2,9 +2,9 @@ import styled from "styled-components";
 import { FunctionComponent } from "react";
 import { useRouter } from 'next/router';
 import { useForm } from "react-hook-form";
-import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { signUp } from "../lib/auth-helpers"
 import { registerSchema } from "../lib/yupSchemas";
-import { useAuth } from "../lib/auth";
 import Button from './button';
 import Link from 'next/link';
 
@@ -59,7 +59,6 @@ const Label = styled.label`
 
 const SignUpForm: FunctionComponent = () => {
   const router = useRouter();
-  const { signUp } = useAuth();
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema)
   });
@@ -69,7 +68,8 @@ const SignUpForm: FunctionComponent = () => {
     if (res === 'success') {
       router.push('/login');
     } else {
-      alert(res);
+      // TODO: replace with custom popup modal
+      alert(res.message);
     }
   };
 

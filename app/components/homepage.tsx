@@ -54,7 +54,7 @@ function HomePage({ name }: { name: string }) {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const cookies = context.req.cookies;
 
-  console.log(cookies)
+  const token = cookies.token;
 
   const query = `
     query getRecentEntries($username: String!){
@@ -79,8 +79,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     console.error(json.errors)
     throw new Error('Failed to fetch API')
   }
-  
-  console.log(json.data)
 
   return {
     props: {

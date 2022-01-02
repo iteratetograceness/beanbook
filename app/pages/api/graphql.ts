@@ -1,18 +1,26 @@
-import { PageConfig } from "next";
+import { PageConfig, NextApiRequest } from "next";
 import Cors from "micro-cors";
 import { ApolloServer } from "apollo-server-micro";
 import { typeDefs } from "./schemas";
 import { resolvers } from "./resolvers";
-
-const context = ({ req }: { req: any }) => {
-  return {
-    token: req.headers.authorization
-  }
-}
+import { getSession } from "next-auth/react";
 
 const cors = Cors();
 
-const server = new ApolloServer({ typeDefs, resolvers, context });
+// const createContext = async ({ req }: { req: NextApiRequest }) => {
+//   const session = await getSession({ req });
+
+//   console.log('ctx', session)
+
+//   return {
+//     session
+//   }
+// };
+
+const server = new ApolloServer({ 
+  typeDefs, 
+  resolvers
+});
 
 const startServer = server.start();
 

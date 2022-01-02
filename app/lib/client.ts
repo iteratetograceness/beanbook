@@ -1,26 +1,35 @@
 import { useMemo } from 'react';
-import { ApolloClient, HttpLink, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
+import { ApolloClient, HttpLink, InMemoryCache, NormalizedCacheObject, ApolloLink, concat } from '@apollo/client';
 import { relayStylePagination } from "@apollo/client/utilities";
 import merge from 'deepmerge';
 import isEqual from 'lodash/isEqual';
-import Cookies from 'js-cookie';
+import { useSession } from 'next-auth/react';
 
 export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
 function createApolloClient() {
-  const token = Cookies.get('token')
+
+  const httpLink = new HttpLink({
+    uri: 'http://localhost:3000/api/graphql',
+  })
+
+  const authMiddleware = new ApolloLink((operation, forward) => {
+
+    operation.setContext(({ headers = {} }) => ({
+      headers: {
+        ...headers,
+        //credentials: 'include'
+      }
+    }));
+  
+    return forward(operation);
+  })  
 
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
-    link: new HttpLink({
-      uri: 'http://localhost:3000/api/graphql',
-      credentials: 'include', 
-      headers: {
-        authorization: token ? `Bearer ${token}` : ''
-      }
-    }),
+    link: concat(authMiddleware, httpLink),
     cache: new InMemoryCache({
       typePolicies: {
         Query: {
@@ -68,6 +77,6 @@ export function addApolloState(client: ApolloClient<NormalizedCacheObject>, page
 
 export function useApollo(pageProps: any) {
   const state = pageProps[APOLLO_STATE_PROP_NAME];
-  const store = useMemo(() => initializeApollo(state), [state]);
+  const store = useMemo(() => initializeApollo(), [state]);
   return store;
 }

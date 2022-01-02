@@ -2,11 +2,11 @@ import React, { FunctionComponent, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import Button from './button';
-import { useAuth } from '../lib/auth';
 import { useRouter } from 'next/router';
 import { useMediaQuery } from "react-responsive";
 import { stack as Menu } from 'react-burger-menu';
 import { SettingFilled } from '@ant-design/icons';
+import { signOut } from "next-auth/react"
 
 const Nav = styled.nav`
   display: grid;
@@ -108,15 +108,14 @@ var styles = {
 }
 
 const NavBar: FunctionComponent = () => {
-  const { signOut } = useAuth()
+  // const { signOut } = useAuth()
 
   const isMobile = useMediaQuery({ maxWidth: 600 });
 
   const router = useRouter();
 
   const handleSignOut = async () => {
-    await signOut();
-    router.push('/login');
+    signOut({ callbackUrl: 'http://localhost:3000/' })
   }
 
   if (isMobile) 

@@ -3,6 +3,8 @@ import Head from 'next/head';
 import NavBar from './navbar';
 import Footer from './footer';
 import styled from 'styled-components';
+import Error from "../pages/_error";
+import { useSession } from "next-auth/react";
 
 const Container = styled.div`
     display flex;
@@ -27,22 +29,30 @@ type Props = {
 }
 
 const Layout = ({ children, title = 'beanbook' }: Props) => {
-    return (
-    <Container>
-        <Head>
-            <title>{title}</title>
-            <meta charSet="utf-8" />
-            <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        </Head>
-        <header>
-         <NavBar />
-        </header>
-        <Main>
-            {children}
-        </Main>
-        <Footer/>
-    </Container>
-    )
+    const { status } = useSession()
+
+    if (status == "authenticated") {
+        return (
+        <Container>
+            <Head>
+                <title>{title}</title>
+                <meta charSet="utf-8" />
+                <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+            </Head>
+            <header>
+            <NavBar />
+            </header>
+            <Main>
+                {children}
+            </Main>
+            <Footer/>
+        </Container>
+        ) 
+    } else {
+        return (
+            <Error />
+        )
+    }
 }
 
 

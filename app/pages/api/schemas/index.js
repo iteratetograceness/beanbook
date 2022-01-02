@@ -54,6 +54,13 @@ export const typeDefs = gql`
     message: String
   }
 
+  type Authorization {
+    user_id: ID
+    firstname: String
+    authorized: Boolean!
+    message: String!
+  }
+
   type Query {
     getUsers: [User]
     getUser(username: String!): User!
@@ -63,7 +70,7 @@ export const typeDefs = gql`
   
   type Mutation {
     signup(id: ID!, firstname: String!, lastname: String!, username: String!, password: String!, email: String!): Validation
-    login(username: String!, password: String!): AuthToken
+    login(username: String!, password: String!): Authorization
     addEntry(entry: EntryInput): Validation
     updateEntry(entry: EntryInput): Validation
     deleteEntry(entryID: ID!): Validation

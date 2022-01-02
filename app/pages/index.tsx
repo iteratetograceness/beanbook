@@ -17,12 +17,10 @@ const Main: NextPage = () => {
     <div>
       <Head>
         <title>beanbook</title>
-        <meta name="description" content="your favorite coffee app" />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <Container>
-        <AnimatedLetters title='beanbook'/>
+        <AnimatedLetters title={['b', 'e', 'a', 'n', 'b', 'o', 'o', 'k']}/>
       </Container>
     </div>
   )

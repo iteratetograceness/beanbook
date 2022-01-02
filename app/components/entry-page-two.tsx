@@ -1,11 +1,7 @@
-import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 import { beanSchema } from "../lib/yupSchemas";
 import styled from 'styled-components';
-import { useForm } from "react-hook-form";
 import { StarOutlined, StarFilled } from "@ant-design/icons";
-import { MouseEvent, useState } from 'react';
-
-const schema = beanSchema
+import { MouseEvent } from 'react';
 
 const Container = styled.div`
   display: flex;

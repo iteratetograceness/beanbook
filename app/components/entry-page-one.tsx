@@ -1,9 +1,4 @@
-import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
-import { beanSchema } from "../lib/yupSchemas";
 import styled from 'styled-components';
-import { useForm } from "react-hook-form";
-
-const schema = beanSchema
 
 const Container = styled.div`
   display: flex;

@@ -2,11 +2,12 @@ import styled from "styled-components";
 import { FunctionComponent } from "react";
 import { useRouter } from 'next/router';
 import { useForm } from "react-hook-form";
-import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { loginSchema } from "../lib/yupSchemas";
-import { useAuth } from '../lib/auth'
+import { signIn } from "next-auth/react"
 import Button from './button';
 import Link from 'next/link';
+import { LoginResponseObject } from "../lib/types/next-auth";
 
 const schema = loginSchema;
 
@@ -59,15 +60,17 @@ const Label = styled.label`
 
 const LoginForm: FunctionComponent = () => {
   const router = useRouter();
-  const { signIn } = useAuth()
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema)
   });
   
   const handleLogin = async (data: any) => {
-    const res = await signIn(data)
-    if (typeof res === 'object') alert(res.error)
-    else router.push('/home');
+    const res: LoginResponseObject | undefined = await signIn('credentials', { redirect: false, password: data.password, username: data.username })
+    
+    if (res) {
+      if (res['ok']) router.push('/home')
+      else alert(res['error'] || 'Login failed. Please try again.')
+    } 
   };
 
   return (

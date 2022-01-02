@@ -3,8 +3,8 @@ import AuthLayout from './../components/authLayout';
 import Head from 'next/head';
 import LoginForm from '../components/loginform';
 import styled from 'styled-components';
-import Cookies from 'js-cookie'
 import { useRouter } from 'next/router';
+import { useSession } from "next-auth/react";
 import { useEffect } from 'react';
 
 const FixedAuthLayout = styled(AuthLayout)`
@@ -12,13 +12,15 @@ const FixedAuthLayout = styled(AuthLayout)`
 `;
 
 const Login: NextPage = () => {
-  const router = useRouter();
+
+  const router = useRouter()
+  const { status } = useSession()
+
+  if (status === "authenticated") router.push('/home')
 
   useEffect(() => {
-    if (Cookies.get('token')) {
-      router.push('/home')
-    }
-  })
+    router.prefetch('/home')
+  }, [])
 
   return (
     <FixedAuthLayout>

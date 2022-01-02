@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken'
 import { compareSync, hashSync } from 'bcrypt'
 const { Pool } = require('pg');
 
@@ -40,9 +39,10 @@ export const resolvers =
       getEntry: async (root, args, context, info) => {
         try {
           const id = args.id;
-          const query = `SELECT * FROM entries WHERE id = $1`;
-          const entry = await pool.query(query, [id]);
-          return entry.rows[0];
+          const query = `SELECT * FROM entries WHERE id=$1 LIMIT 1`;
+          const entry = await pool.query(query, [id])
+            .then(res => res.rows[0])
+          return entry;
         } catch (error) {
           return error;
         }
@@ -56,6 +56,7 @@ export const resolvers =
           await pool.query(query, [args.id, args.firstname, args.lastname, args.username, args.password, args.email]);
           return {
             validation: true,
+            message: 'User created successfully.'
           }
         } catch (error) {
           return {
@@ -70,22 +71,24 @@ export const resolvers =
           const users = await pool.query(query, [args.username]);
           const user = users.rows[0];
           if (user && compareSync(args.password, user.password)) {
-            const token = jwt.sign({
-              id: user.id,
-              firstname: user.firstname,
-              username: user.username
-            }, process.env.JWT_SECRET);
 
             return {
-              token
+              user_id: user.id,
+              firstname: user.firstname,
+              authorized: true,
+              message: 'User logged in successfully.'
             }
           } else {
             return {
-              token: 'invalid'
+              authorized: false,
+              message: 'Invalid username or password.'
             }
           }
         } catch (error) {
-          return error;
+          return {
+            authorized: false,
+            message: error.message
+          };
         }
       },
       addEntry: async (root, args, context, info) => {
@@ -94,7 +97,6 @@ export const resolvers =
           const query = `INSERT INTO entries (id, userid, favorited, origin_name, price, roaster, producer, roast_date, variety, process, rating, notes, brew_method, taste_tags) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`;
           const res = await pool.query(query, [entry.id, entry.userid, entry.favorited, entry.origin_name, entry.price, entry.roaster, entry.producer, entry.roast_date, entry.variety, entry.process, entry.rating, entry.notes, entry.brew_method, entry.taste_tags]);
 
-          console.log(res.rows[0])
           return {
             validation: true,
             message: 'Entry added successfully'
@@ -107,12 +109,38 @@ export const resolvers =
         }
       },
       updateEntry: async (root, args, context, info) => {
-        console.log(args)
-        return 'updateCard'
+        const { entry } = args;
+        try {
+          const query = `UPDATE entries SET favorited = $1, origin_name = $2, price = $3, roaster = $4, producer = $5, roast_date = $6, variety = $7, process = $8, rating = $9, notes = $10, brew_method = $11, taste_tags = $12 WHERE id = $13`;
+          const res = await pool.query(query, [entry.favorited, entry.origin_name, entry.price, entry.roaster, entry.producer, entry.roast_date, entry.variety, entry.process, entry.rating, entry.notes, entry.brew_method, entry.taste_tags, entry.id]);
+          
+          return {
+            validation: true,
+            message: 'Entry updated successfully'
+          }
+
+        } catch(err) {
+          return {
+            validation: false,
+            message: err.message
+          }
+        }
       },
       deleteEntry: async (root, args, context, info) => {
-        console.log(args)
-        return 'deleteCard'
+        const { id } = args;
+        try {
+          const query = `DELETE FROM entries WHERE id = $1`;
+          await pool.query(query, [id]);
+          return {
+            validation: true,
+            message: 'Entry deleted successfully'
+          }
+        } catch(err) {
+          return {
+            validation: false,
+            message: err.message
+          }
+        }
       },
     }
   };

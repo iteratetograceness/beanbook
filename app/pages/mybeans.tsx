@@ -1,22 +1,27 @@
-import Cookies from 'js-cookie'
-import { useRouter } from 'next/router'
-import { useEffect } from 'react';
+import { getSession } from "next-auth/react";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import Layout from "../components/layout";
 
-const MyBeans = () => {
-
-  const router = useRouter()
-
-  useEffect(() => {
-    if (!Cookies.get('token')) {
-      router.push('/login')
-    }
-  })
+const MyBeans = ({ entries }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
   return (
-    <div>
-      <p>my beans</p>
-    </div>
+    <Layout>
+      <h1> MY BEANS PAGE </h1>
+    </Layout>
   )
+}
+
+export async function getServerSideProps (context: GetServerSidePropsContext) {
+  const session = await getSession({ req: context.req })
+  const userid = session?.user?.user_id
+
+  // TODO: Get User Entries from DB
+
+  return {
+    props: {
+      entries: "entries"
+    }
+  };
 }
 
 export default MyBeans

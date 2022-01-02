@@ -1,87 +1,62 @@
-import Layout from '../../components/layout';
-import Link from 'next/link';
 import Head from 'next/head';
 import { useRouter } from 'next/router'
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next'
+import { GetServerSidePropsContext, NextApiRequest } from 'next'
 import styled from 'styled-components';
-import Cookies from 'js-cookie';
-import { useEffect } from 'react';
+import Loading from '../../components/loading';
+import Layout from '../../components/layout';
 import { initializeApollo, addApolloState } from '../../lib/client';
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+import { GET_ENTRY } from '../../lib/queries';
+import { DefaultEntry } from '../../lib/reducers/entryReducer';
 
 const Container = styled.div`
   background-color: ${props => props.theme.colors.darkest};
 `;
 
-const token = Cookies.get('token')
-const GET_ENTRY = gql`
-  query GetEntry($id: ID!) {
-    getEntry(id: $id) {
-      origin_name
-      favorited
-      price
-      roaster
-      producer
-      roast_date
-      variety
-      process
-      rating
-      notes
-      brew_method
-      taste_tags
-      created_on
-    }
-  }
-`
-
-const Entry = ({ entry }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const Entry = () => {
 
   const router = useRouter()
 
-  useEffect(() => {
-    if (!Cookies.get('token')) {
-      router.push('/login')
+  const { loading, error, data } = useQuery(GET_ENTRY, {
+    variables: {
+      id: router.query.id
     }
-  })
+  });
 
-  // const { loading, error, data } = useQuery(GET_ENTRY, {
-  //   variables: {
-  //     id: router.query.id
-  //   }
-  // });
+  // TODO: Custom error modal/toast
+  if (error) alert(error);
 
-  console.log(entry)
+  const entry = data?.getEntry || DefaultEntry;
 
-  return (
+  if (loading) return <Loading />;
+  else {
+    return (
     <Layout>
       <Head>
-        <title>{ router.query.id }</title>
+        <title></title>
       </Head>
       <Container>
-        <h1>{ router.query.id }</h1>
-        <Link href="/">
-            <a>Back to home</a>
-        </Link>
+        <h1>{ entry.origin_name }</h1>
       </Container>
     </Layout>
   )
+  }
+  
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
 
   const apolloClient = initializeApollo()
   const { id } = context.query
   const variables = { id }
 
-  const res = await apolloClient.query({
+  await apolloClient.query({
     query: GET_ENTRY,
     variables
   });
 
   return addApolloState(apolloClient, {
-    props: {
-      entry: res.data.getEntry
-    },
+    props: {}
   });
 }
 

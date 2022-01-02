@@ -20,6 +20,11 @@ const Button = styled(motion.button)<{ inverse: string, variant: string }>`
   width: 7rem;
   font-family: Inconsolata;
   border: none;
+
+  &:hover {
+    transform: scale(1.05);
+    transition: transform 0.2s ease-in-out;
+  }
 `;
 
 export default Button;

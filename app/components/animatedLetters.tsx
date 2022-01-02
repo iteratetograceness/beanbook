@@ -4,6 +4,9 @@ import React from "react";
 import { motion } from "framer-motion";
 import styled from "styled-components";
 import Link from 'next/link'; 
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useSession } from "next-auth/react";
 
 const Letter = styled(motion.span)`
   font-size: 5rem;
@@ -72,8 +75,19 @@ const buttonAni = {
   }
 };
 
-const AnimatedLetters = ({ title }: { title: string }) => {
-  const titleArr = [...title];
+type AnimatedLettersProps = {
+  title: Array<string>;
+}
+
+const AnimatedLetters = ({ title }: AnimatedLettersProps) => {
+  const titleArr = title;
+
+  const router = useRouter();
+  const { status } = useSession()
+
+  useEffect(() => {
+    router.prefetch('/home')
+  }, [])
 
   return(
     <>
@@ -95,7 +109,7 @@ const AnimatedLetters = ({ title }: { title: string }) => {
         initial="hidden"
         animate="show"
       > 
-        <Link href="/login" passHref>
+        <Link href={status === "authenticated" ? '/home' : '/login'} passHref>
           <Button 
             key='b1' 
             whileHover={
