@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import CoffeeCard from './coffeecard';
 import Title from './title';
 import SearchBar from './search';
+import { CoffeeCardType } from '../lib/types/entries';
 import { SmileOutlined, CalendarOutlined } from '@ant-design/icons';
-import { GetServerSidePropsContext } from "next";
+import CoffeeCard from './coffeecard';
 
 const Container = styled.div`
   display: flex;
@@ -32,7 +32,19 @@ const SearchContainer = styled.div`
   }
 `;
 
-function HomePage({ name }: { name: string }) {
+function HomePage({ name, entries }: { name: string, entries: CoffeeCardType[] }) {
+
+  const recentCards = entries.map((entry: CoffeeCardType, i) => {
+    return (
+      <CoffeeCard
+        origin_name={entry.origin_name}
+        rating={entry.rating || 0}
+        id={entry.id}
+        favorited={entry.favorited}
+        key={entry.id}
+      />
+    )
+  });
 
   return (
     <Container>
@@ -42,23 +54,11 @@ function HomePage({ name }: { name: string }) {
       </SearchContainer>
       <Title name='recently added' icon={<CalendarOutlined style={{ fontSize: '23px', marginRight: '10px' }}/>} />
       <RecentlyAdded>
-        <CoffeeCard id='1fas3fsadf' origin_name='Hidden Grounds Broadway' rating={5} favorited={true} />
-        <CoffeeCard id='1fas3fsadf' origin_name='Hidden Grounds Broadway' rating={5} favorited={true}/>
-        <CoffeeCard id='1fas3fsadf' origin_name='Hidden Grounds Broadway' rating={5} favorited={false}/>
-        <CoffeeCard id='1fas3fsadf' origin_name='Hidden Grounds Broadway' rating={5} favorited={true}/>
+        {recentCards}
       </RecentlyAdded>
     </Container>
   )
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-
-  // TODO: Get recent entries
-
-  // return {
-  //   notFound: true,
-  // }
-
+  
 }
 
 export default HomePage

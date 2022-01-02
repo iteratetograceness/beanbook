@@ -27,6 +27,23 @@ export const typeDefs = gql`
     taste_tags: [String]
   }
 
+  input UpdateEntryInput {
+    id: ID!
+    userid: ID
+    favorited: Boolean
+    origin_name: String
+    price: Float
+    roaster: String
+    producer: String
+    roast_date: String
+    variety: String
+    process: String
+    rating: Int
+    notes: String
+    brew_method: [String]
+    taste_tags: [String]
+  }
+
   type Entry {
     id: ID!
     userid: ID!
@@ -66,13 +83,15 @@ export const typeDefs = gql`
     getUser(username: String!): User!
     getEntries(userid: ID!): [Entry]
     getEntry(id: ID!): Entry!
+    getSearch(userid: ID!, query: String!, filters: [String]): [Entry]
+    getRecentEntries(userid: ID!): [Entry]
   }
   
   type Mutation {
     signup(id: ID!, firstname: String!, lastname: String!, username: String!, password: String!, email: String!): Validation
     login(username: String!, password: String!): Authorization
     addEntry(entry: EntryInput): Validation
-    updateEntry(entry: EntryInput): Validation
+    updateEntry(entry: UpdateEntryInput): Validation
     deleteEntry(entryID: ID!): Validation
   }`
 ;

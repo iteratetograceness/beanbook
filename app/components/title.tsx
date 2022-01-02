@@ -26,7 +26,6 @@ function Title({ name, icon }: { name: string, icon: any }) {
   return (
     <Container>
       {icon}
-      {/* <SmileOutlined style={{ fontSize: '23px', marginRight: '10px' }}/> */}
       <p><span>{ name }</span></p>
     </Container>
   )

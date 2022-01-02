@@ -2,6 +2,8 @@ import styled from "styled-components"
 import { HeartFilled, HeartOutlined, RightCircleFilled, StarOutlined, StarFilled } from "@ant-design/icons";
 import { MouseEvent, useState } from "react";
 import { useRouter } from "next/router";
+import { useMutation } from "@apollo/client";
+import { UPDATE_ENTRY } from "../lib/queries";
 
 const Container = styled.div`
   display: grid;
@@ -12,12 +14,15 @@ const Container = styled.div`
   background-color: ${props => props.theme.colors.light};
   border-radius: 2rem;
   padding: 2rem;
-  min-width: 210px;
-  max-width: 210px;
+  width: 'fill-available';
+  min-width: 190px;
   min-height: 200px;
   max-height: 210px;
-  flex-grow: 1;
   gap: 1rem;
+
+  @media (max-width: 400px) {
+    min-width: 150px;
+  }
 
   h3 {
     margin: 0;
@@ -54,11 +59,29 @@ function CoffeeCard({ origin_name, rating, id, favorited }: CoffeeCardProps) {
   const [stars, setStars] = useState(rating)
   const router = useRouter();
 
+  const [updateEntry, { data, loading, error }] = useMutation(UPDATE_ENTRY);
+
   const handleRating = async (e: MouseEvent) => {
     e.preventDefault()
     const star_num = e.currentTarget.attributes['name' as any].value
     setStars((prev) => Number(star_num) + 1)
-    // await fetch to API to update rating
+    const entry = {
+      id,
+      rating: Number(star_num) + 1,
+    }
+    updateEntry({ variables: { entry } })
+    window.location.reload();
+  }
+
+  const handleLike = async (e: MouseEvent) => {
+      e.preventDefault();
+      setLiked(!liked);
+      const entry = {
+        id,
+        favorited: !liked
+      }
+      updateEntry({ variables: { entry } })
+      window.location.reload();
   }
 
   const starArr = new Array(5).fill(0).map((_, index) => {
@@ -69,16 +92,6 @@ function CoffeeCard({ origin_name, rating, id, favorited }: CoffeeCardProps) {
     }
   })
 
-  const handleClick = (e: MouseEvent) => {
-    e.preventDefault();
-  }
-
-  const handleLike = async (e: MouseEvent) => {
-    e.preventDefault();
-    setLiked(!liked);
-    // await fetch to API to edit entry
-  }
-
   const handleGoTo = (e: MouseEvent) => {
     e.preventDefault();
     router.push({
@@ -88,7 +101,7 @@ function CoffeeCard({ origin_name, rating, id, favorited }: CoffeeCardProps) {
   }
 
   return (
-    <Container onClick={(e) => handleClick(e)}>
+    <Container>
       { liked ? 
       <HeartFilled onClick={handleLike} /> : 
       <HeartOutlined onClick={handleLike} /> }

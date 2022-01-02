@@ -1,4 +1,4 @@
-import { getSession, useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import { GetServerSidePropsContext } from "next";
 import Layout from "../components/layout";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
@@ -10,6 +10,8 @@ import { useQuery } from "@apollo/client";
 import { initializeApollo } from "../lib/client";
 import { useRouter } from "next/router";
 import Loading from "../components/loading";
+import { useState, useEffect } from "react";
+import { CoffeeCardType } from "../lib/types/entries";
 
 const Container = styled.div`
   display: flex;
@@ -20,26 +22,30 @@ const Container = styled.div`
 
 const Panel = styled.div`
   background-color: ${props => props.theme.colors.light};
-  width: 100%;
+  width: calc(100vw - 8rem);
   padding: 2rem;
   border-radius: 0 1rem 1rem 1rem;
 `;
 
-const MyBeans = ({ session }: { session: any }) => {
+const MyBeans = ({ user_id }: { user_id: any }) => {
 
   const router = useRouter();
-  
-  console.log('component', session)
 
   const { loading, error, data } = useQuery(GET_ENTRIES, {
-    variables: {
-      userid: session?.user.user_id
-    }
+    variables: { userid: user_id },
   });
+  
+  const [ entries, setEntries ] = useState<CoffeeCardType[]>([]);
 
-  //console.log(data)
+  useEffect(() => {
+    if(loading === false && data){
+      const unorderedEntries: CoffeeCardType[] = [...data.getEntries];
+      const sortedEntries: CoffeeCardType[] = unorderedEntries.sort((a: CoffeeCardType, b: CoffeeCardType) => Number(b.created_on) - Number(a.created_on));
+      setEntries(sortedEntries);
+    }
+  }, [loading, data])
 
-  //if (error) router.push('/404')
+  if (error) router.push('/404')
 
   if (loading) return <Loading />;
   else {
@@ -55,14 +61,12 @@ const MyBeans = ({ session }: { session: any }) => {
 
           <TabPanel>
             <Panel>
-              <h1>all entries</h1>
-              <Grid type='all'/>
+              <Grid type='all' entries={entries} />
             </Panel>
           </TabPanel>
           <TabPanel>
             <Panel>
-              <h1>fav entries</h1>
-              <Grid type='fav'/>
+              <Grid type='fav' entries={entries} />
             </Panel>
           </TabPanel>
         </Tabs>
@@ -76,7 +80,6 @@ const MyBeans = ({ session }: { session: any }) => {
 
 export async function getServerSideProps (context: GetServerSidePropsContext) {
   const session = await getSession({ req: context.req })
-  console.log('server', session)
   const userid = session?.user?.user_id
   const variables = { userid }
 

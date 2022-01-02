@@ -55,6 +55,39 @@ export const GET_ENTRIES = gql`
       favorited
       rating
       created_on
+      id
     }
   }
 `
+
+export const UPDATE_ENTRY = gql`
+  mutation UpdateEntry($entry: UpdateEntryInput) {
+    updateEntry(entry: $entry) {
+      validation
+    }
+  }
+`;
+
+export const GET_SEARCH = gql`
+  query GetSearch($userid: ID!, $query: String!, $filters: [String]) {
+    getSearch(userid: $userid, query: $query, filters: $filters) {
+      origin_name
+      favorited
+      rating
+      created_on
+      id
+    }
+  }
+`;
+
+export const GET_RECENT_ENTRIES = gql`
+  query GetRecentEntries($userid: ID!) {
+    getRecentEntries(userid: $userid) {
+      origin_name
+      favorited
+      rating
+      created_on
+      id
+    }
+  }
+`;

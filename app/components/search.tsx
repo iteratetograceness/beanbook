@@ -1,6 +1,7 @@
 import styled from "styled-components"
-import { SearchOutlined, CheckOutlined, CheckCircleOutlined } from "@ant-design/icons";
+import { SearchOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import { FormEvent, useState } from "react";
+import { useRouter } from "next/router";
 
 const SearchContainer = styled.div`
   display: flex;
@@ -72,7 +73,9 @@ function SearchBar() {
   const [value, setValue] = useState('')
   const [filters, setFilters] = useState([])
 
-  const rawFilters: Array<string> = ['origin/name', 'roaster/producer', 'variety', 'process', 'brew', 'taste']
+  const router = useRouter();
+
+  const rawFilters: Array<string> = ['origin/name', 'roaster/producer', 'variety', 'process', 'notes']
 
   const filterList = rawFilters.map((filter, index) => {
     return (
@@ -106,7 +109,26 @@ function SearchBar() {
   const handleSearch = (e: FormEvent) => {
     e.preventDefault()
     // TODO: route to search entry card grid
-    // send along filters, search value, username
+    
+    let query = value.split(' ').join('%|%');
+    query = '%' + query + '%';
+
+    let filter: string[] = []
+
+    for (let str of filters) {
+      if (str === 'origin/name') filter.push('origin_name')
+      if (str === 'roaster/producer') {
+        filter.push('roaster', 'producer')
+      }
+      if (str === 'notes') filter.push('notes')
+      if (str === 'variety') filter.push('variety')
+      if (str === 'process') filter.push('process')
+    }
+
+    router.push({
+      pathname: `/search`,
+      query: { query, filter }
+    });
   }
 
   return (

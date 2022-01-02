@@ -46,6 +46,38 @@ export const resolvers =
         } catch (error) {
           return error;
         }
+      },
+      getSearch: async (root, args, context, info) => {
+        const { userid, query, filters } = args;
+
+        let queryString = `SELECT * FROM entries WHERE userid = $1 AND `;
+        let variables = [userid, query];
+
+        if (!filters) {
+          queryString += `origin_name SIMILAR TO $2 OR roaster SIMILAR TO $2 OR producer SIMILAR TO $2 OR variety SIMILAR TO $2 OR process SIMILAR TO $2 OR notes SIMILAR TO $2`;
+        } else {
+          let len = filters.length + 2;
+          let i = 3;
+
+          for (let filter of filters) { 
+            queryString += `${filter} SIMILAR TO $2 ${i === len ? '' : 'OR '}`;
+            i++;
+          }
+        }
+        //TODO: Custom no search results found message
+        const searchResults = await pool.query(queryString, variables);
+        return searchResults.rows;
+      },
+      getRecentEntries: async (root, args, context, info) => {
+        try {
+          const userid = args.userid;
+          const query = `SELECT * FROM entries WHERE userid = $1 ORDER BY created_on DESC LIMIT 3`;
+          const entries = await pool.query(query, [userid]);
+          console.log(entries.rows)
+          return entries.rows;
+        } catch (error) {
+          return error;
+        }
       }
     },
     Mutation: {
@@ -109,10 +141,31 @@ export const resolvers =
         }
       },
       updateEntry: async (root, args, context, info) => {
-        const { entry } = args;
+ 
         try {
-          const query = `UPDATE entries SET favorited = $1, origin_name = $2, price = $3, roaster = $4, producer = $5, roast_date = $6, variety = $7, process = $8, rating = $9, notes = $10, brew_method = $11, taste_tags = $12 WHERE id = $13`;
-          const res = await pool.query(query, [entry.favorited, entry.origin_name, entry.price, entry.roaster, entry.producer, entry.roast_date, entry.variety, entry.process, entry.rating, entry.notes, entry.brew_method, entry.taste_tags, entry.id]);
+
+          let query = 'UPDATE entries SET ';
+
+          const { entry } = args;
+
+          const length = Object.keys(entry).length - 1;
+          let i = 1;
+
+          const variables = [];
+
+          for (let key in entry) {
+            if (key !== 'id') {
+              query += `${key} = $${i}`;
+              if (i < length) query += ', ';
+              i++;
+              variables.push(entry[key]);
+            }
+          }
+
+          query += `WHERE id = $${variables.length + 1}`;
+          variables.push(entry.id);
+
+          await pool.query(query, variables);
           
           return {
             validation: true,
