@@ -38,6 +38,7 @@
     "react-dom": "17.0.2",
     "react-hook-form": "^7.20.4",
     "react-responsive": "^9.0.0-beta.5",
+    "react-tabs": "^3.2.3",
     "styled-components": "^5.3.3",
     "uuid": "^8.3.2",
     "yup": "^0.32.11"
@@ -50,6 +51,7 @@
     "@types/micro-cors": "^0.1.2",
     "@types/node": "16.11.9",
     "@types/react": "17.0.35",
+    "@types/react-tabs": "^2.3.4",
     "@types/styled-components": "^5.1.15",
     "@types/uuid": "^8.3.3",
     "autoprefixer": "^10.4.0",

@@ -1,17 +1,13 @@
 import { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 
-interface Query {
-  id: string;
-  
-}
 
-function Grid() {
-  const { query: Query } = useRouter();
+function Grid({ type }: { type: string }) {
+  const router = useRouter();
 
   return (
     <div>
-      
+      <h1>search bar</h1>
     </div>
   )
 }

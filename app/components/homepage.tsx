@@ -42,49 +42,23 @@ function HomePage({ name }: { name: string }) {
       </SearchContainer>
       <Title name='recently added' icon={<CalendarOutlined style={{ fontSize: '23px', marginRight: '10px' }}/>} />
       <RecentlyAdded>
-        <CoffeeCard id='1fas3fsadf' origin_name='Hidden Grounds Broadway' rating={5} />
-        <CoffeeCard id='1fas3fsadf' origin_name='Hidden Grounds Broadway' rating={5} />
-        <CoffeeCard id='1fas3fsadf' origin_name='Hidden Grounds Broadway' rating={5} />
-        <CoffeeCard id='1fas3fsadf' origin_name='Hidden Grounds Broadway' rating={5} />
+        <CoffeeCard id='1fas3fsadf' origin_name='Hidden Grounds Broadway' rating={5} favorited={true} />
+        <CoffeeCard id='1fas3fsadf' origin_name='Hidden Grounds Broadway' rating={5} favorited={true}/>
+        <CoffeeCard id='1fas3fsadf' origin_name='Hidden Grounds Broadway' rating={5} favorited={false}/>
+        <CoffeeCard id='1fas3fsadf' origin_name='Hidden Grounds Broadway' rating={5} favorited={true}/>
       </RecentlyAdded>
     </Container>
   )
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const cookies = context.req.cookies;
 
-  const token = cookies.token;
+  // TODO: Get recent entries
 
-  const query = `
-    query getRecentEntries($username: String!){
-      getRecentEntries(username: $username) {
-        id
-        origin_name
-        rating
-      }
-    }
-  `
-  const variables = { username: 'test' }
+  // return {
+  //   notFound: true,
+  // }
 
-  const res = await fetch('/api/graphql', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query })
-  });
-
-  const json = await res.json();
-
-  if (json.errors) {
-    console.error(json.errors)
-    throw new Error('Failed to fetch API')
-  }
-
-  return {
-    props: {
-      
-    },
-  }
 }
 
 export default HomePage

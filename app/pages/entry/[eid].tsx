@@ -24,7 +24,7 @@ const Entry = () => {
   });
 
   // TODO: Custom error modal/toast
-  if (error) alert(error);
+  if (error) router.push('/404')
 
   const entry = data?.getEntry || DefaultEntry;
 
@@ -53,7 +53,12 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
   await apolloClient.query({
     query: GET_ENTRY,
     variables
-  });
+  })
+    .catch(err => {
+      return {
+        notFound: true,
+      }
+    })
 
   return addApolloState(apolloClient, {
     props: {}

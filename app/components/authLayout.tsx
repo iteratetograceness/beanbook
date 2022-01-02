@@ -1,5 +1,4 @@
-import React, { ReactNode, useEffect } from 'react';
-import { Router } from 'next/router';
+import React, { ReactNode } from 'react';
 import Head from 'next/head';
 import styled from 'styled-components';
 

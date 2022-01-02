@@ -112,8 +112,6 @@ const NavBar: FunctionComponent = () => {
 
   const isMobile = useMediaQuery({ maxWidth: 600 });
 
-  const router = useRouter();
-
   const handleSignOut = async () => {
     signOut({ callbackUrl: 'http://localhost:3000/' })
   }

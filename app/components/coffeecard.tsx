@@ -46,10 +46,11 @@ interface CoffeeCardProps {
   origin_name: string;
   rating: number;
   id: string;
+  favorited: boolean;
 }
 
-function CoffeeCard({ origin_name, rating, id }: CoffeeCardProps) {
-  const [liked, setLiked] = useState(false)
+function CoffeeCard({ origin_name, rating, id, favorited }: CoffeeCardProps) {
+  const [liked, setLiked] = useState(favorited)
   const [stars, setStars] = useState(rating)
   const router = useRouter();
 
@@ -81,9 +82,9 @@ function CoffeeCard({ origin_name, rating, id }: CoffeeCardProps) {
   const handleGoTo = (e: MouseEvent) => {
     e.preventDefault();
     router.push({
-      pathname: "/entry",
+      pathname: `/entry/${origin_name}`,
       query: { id }
-    }, `/entry/${origin_name}`);
+    });
   }
 
   return (

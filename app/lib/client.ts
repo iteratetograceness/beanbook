@@ -3,7 +3,6 @@ import { ApolloClient, HttpLink, InMemoryCache, NormalizedCacheObject, ApolloLin
 import { relayStylePagination } from "@apollo/client/utilities";
 import merge from 'deepmerge';
 import isEqual from 'lodash/isEqual';
-import { useSession } from 'next-auth/react';
 
 export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
 

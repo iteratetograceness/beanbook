@@ -47,3 +47,14 @@ export const GET_ENTRY = gql`
     }
   }
 `
+
+export const GET_ENTRIES = gql`
+  query GetEntries($userid: ID!) {
+    getEntries(userid: $userid) {
+      origin_name
+      favorited
+      rating
+      created_on
+    }
+  }
+`

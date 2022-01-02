@@ -1,4 +1,3 @@
-import { beanSchema } from "../lib/yupSchemas";
 import styled from 'styled-components';
 import { StarOutlined, StarFilled } from "@ant-design/icons";
 import { MouseEvent } from 'react';
