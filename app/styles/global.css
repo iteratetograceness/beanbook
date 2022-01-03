@@ -103,3 +103,7 @@ main {
 .react-tabs__tab-panel--selected {
   display: flex;
 }
+
+a, button {
+  -webkit-tap-highlight-color: transparent;
+}

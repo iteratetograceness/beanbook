@@ -1,8 +1,7 @@
-import React, { FunctionComponent, useState, useEffect } from 'react';
+import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import Button from './button';
-import { useRouter } from 'next/router';
 import { useMediaQuery } from "react-responsive";
 import { stack as Menu } from 'react-burger-menu';
 import { SettingFilled } from '@ant-design/icons';
@@ -67,13 +66,13 @@ var styles = {
     background: '#a90000'
   },
   bmCrossButton: {
-    height: '30px',
-    width: '30px'
+    height: '35px',
+    width: '35px',
+    top: '20px',
+    right: '25px',
   },
   bmCross: {
     background: '#ded9d1',
-    top: '15px',
-    right: '15px',
     height: '25px',
     width: '5px'
   },

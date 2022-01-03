@@ -5,7 +5,7 @@ import { initializeApollo } from "../../../lib/client"
 import type { JWT } from "next-auth/jwt"
 
 export default NextAuth({
-  useSecureCookies: true,
+  //useSecureCookies: true,
   secret: process.env.JWT_SECRET,
   pages: {
     signIn: '/login',

@@ -14,7 +14,7 @@ const MainContainer = styled.div`
   display: flex;
   align-items: center;
   margin-top: 1rem;
-  width: 100%;
+  width: 90%;
 `;
 
 const FilterContainer = styled.div`

@@ -12,6 +12,10 @@ const Letter = styled(motion.span)`
   font-size: 5rem;
   color: #ded9d1;
   font-family: Volkhov;
+
+  @media (max-width: 500px) {
+    font-size: 3.4rem;
+  }
 `;
 
 const Button = styled(motion.button)`

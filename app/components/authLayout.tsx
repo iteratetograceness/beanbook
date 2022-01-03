@@ -19,9 +19,14 @@ const Container = styled.div`
   color: #ded9d1;
   font-size: 2rem;
 
+  @media (max-width: 360px) {
+    font-size: 1.6rem;
+  }
+
   h1 {
     margin: 1rem 0;
     font-family: Volkhov;
+    font-weight: 400;
   }
 `;
 
