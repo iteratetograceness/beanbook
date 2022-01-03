@@ -76,6 +76,9 @@ var styles = {
     height: '25px',
     width: '5px'
   },
+  bmMorphShape: {
+    fill: '#433f3c'
+  },
   bmMenuWrap: {
     position: 'fixed',
     width: '65%'
@@ -86,9 +89,6 @@ var styles = {
     fontSize: '1.5em',
     width: '100%',
     overflow: 'hidden'
-  },
-  bmMorphShape: {
-    fill: '#373a47'
   },
   bmItemList: {
     color: '#b8b7ad',
