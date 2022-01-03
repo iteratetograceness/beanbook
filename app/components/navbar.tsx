@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import Button from './button';
 import { useMediaQuery } from "react-responsive";
-import { stack as Menu } from 'react-burger-menu';
+import { bubble as Menu } from 'react-burger-menu';
 import { SettingFilled } from '@ant-design/icons';
 import { signOut } from "next-auth/react"
 
@@ -100,6 +100,7 @@ var styles = {
     marginBottom: '1em',
     padding: '0.5em',
     borderRadius: '0.5em',
+    transition: 'none'
   },
   bmOverlay: {
     background: 'rgba(	222, 217, 209, 0.3)',
@@ -107,7 +108,6 @@ var styles = {
 }
 
 const NavBar: FunctionComponent = () => {
-  // const { signOut } = useAuth()
 
   const isMobile = useMediaQuery({ maxWidth: 600 });
 
@@ -121,7 +121,7 @@ const NavBar: FunctionComponent = () => {
           <Link href="/home"  >
             <a className='logo' style={{ margin: '2rem 2rem' }}>beanbook</a>
           </Link>
-          <Menu styles={styles} right pageWrapId={ "page-wrap" }>
+          <Menu styles={styles} right>
               <a className='right-nav' href='/addbeans'>add bean</a>
           
               <a className='right-nav' href='/mybeans'>my beans</a>
