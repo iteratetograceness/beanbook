@@ -11,7 +11,7 @@ let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 function createApolloClient() {
 
   const httpLink = new HttpLink({
-    uri: 'http://localhost:3000/api/graphql',
+    uri: 'https://beanbook.vercel.app/api/graphql',
   })
 
   const authMiddleware = new ApolloLink((operation, forward) => {

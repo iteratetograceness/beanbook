@@ -3,7 +3,6 @@ import Cors from "micro-cors";
 import { ApolloServer } from "apollo-server-micro";
 import { typeDefs } from "./schemas";
 import { resolvers } from "./resolvers";
-import { getSession } from "next-auth/react";
 
 const cors = Cors();
 
