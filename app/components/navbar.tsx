@@ -122,7 +122,6 @@ const NavBar: FunctionComponent = () => {
             <a className='logo' style={{ margin: '2rem 2rem' }}>beanbook</a>
           </Link>
           <Menu styles={styles} right pageWrapId={ "page-wrap" }>
-            <main id="page-wrap">
               <a className='right-nav' href='/addbeans'>add bean</a>
           
               <a className='right-nav' href='/mybeans'>my beans</a>
@@ -130,7 +129,6 @@ const NavBar: FunctionComponent = () => {
               <a className='right-nav' href='/home'>settings</a>
           
               <a className='right-nav' onClick={handleSignOut} >logout</a>
-            </main>
           </Menu>
         </Nav>
     )
