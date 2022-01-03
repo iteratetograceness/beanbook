@@ -122,18 +122,10 @@ a {
   outline: none !important;
 }
 
-button,
-textarea,
-input,
-select,
-a:focus {
+*:focus {
   outline-color: #ded9d1 !important;
 }
 
-button,
-textarea,
-input,
-select,
-a:active {
+*:active {
   outline-color: #ded9d1 !important;
 }
