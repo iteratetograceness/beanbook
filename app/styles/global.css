@@ -108,6 +108,8 @@ button,
 textarea,
 input,
 select,
+span,
+svg,
 a {
   -webkit-tap-highlight-color: transparent !important;
   -webkit-touch-callout: none !important;
