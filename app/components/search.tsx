@@ -14,7 +14,11 @@ const MainContainer = styled.div`
   display: flex;
   align-items: center;
   margin-top: 1rem;
-  width: 90%;
+  width: 100%;
+
+  @media (max-width: 400px) {
+    width: 80%;
+  }
 `;
 
 const FilterContainer = styled.div`
