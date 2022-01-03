@@ -28,6 +28,8 @@ const Entry = () => {
 
   const entry = data?.getEntry || DefaultEntry;
 
+  console.log(entry)
+
   if (loading) return <Loading />;
   else {
     return (

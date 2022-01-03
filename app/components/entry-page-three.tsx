@@ -76,7 +76,10 @@ function EntryPageThree({ brew_method, setBrewMethod, taste_tags, setTasteTags }
     const method = e.currentTarget.textContent
     const child = e.currentTarget.children[0] as HTMLElement
     let className = e.currentTarget.className
-    setBrewMethod((prev:any) => [...prev, method])
+    if (brew_method.includes(method)) {
+      const new_methods = brew_method.filter((str: string) => str !== method)
+      setTasteTags(new_methods)
+    } else setBrewMethod((prev:any) => [...prev, method])
     if (className === 'no-toggle') {
       e.currentTarget.className = 'filter-toggled'
       child.setAttribute('style', 'display: block; margin-right: 5px')
@@ -91,7 +94,10 @@ function EntryPageThree({ brew_method, setBrewMethod, taste_tags, setTasteTags }
     const tag = e.currentTarget.textContent
     const child = e.currentTarget.children[0] as HTMLElement
     let className = e.currentTarget.className
-    setTasteTags((prev:any) => [...prev, tag])
+    if (taste_tags.includes(tag)) {
+      const new_taste_tags = taste_tags.filter((taste: string) => taste !== tag)
+      setTasteTags(new_taste_tags)
+    } else setTasteTags((prev:any) => [...prev, tag])
     if (className === 'no-toggle') {
       e.currentTarget.className = 'filter-toggled'
       child.setAttribute('style', 'display: block; margin-right: 5px')
