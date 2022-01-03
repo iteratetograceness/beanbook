@@ -10,6 +10,10 @@ const Container = styled.div`
   flex-direction: column;
   width: calc(100vw - 4rem);
   margin: 0 2rem;
+
+  @media (max-width: 360px) {
+    margin: 0 1rem;
+  }
 `;
 
 const RecentlyAdded = styled.div`
