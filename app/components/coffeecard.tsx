@@ -15,7 +15,7 @@ const Container = styled.div`
   border-radius: 2rem;
   padding: 2rem;
   width: 'fill-available';
-  min-width: 190px;
+  min-width: 200px;
   min-height: 200px;
   max-height: 210px;
   gap: 1rem;
