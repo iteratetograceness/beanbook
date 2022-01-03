@@ -20,10 +20,6 @@ const Container = styled.div`
   max-height: 210px;
   gap: 1rem;
 
-  @media (max-width: 400px) {
-    min-width: 150px;
-  }
-
   h3 {
     margin: 0;
   }
