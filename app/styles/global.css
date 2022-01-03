@@ -120,3 +120,11 @@ a {
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
 }
+
+button,
+textarea,
+input,
+select,
+a:focus {
+  outline-color: #ded9d1;
+}

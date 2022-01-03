@@ -21,7 +21,8 @@ const Container = styled.div`
   gap: 1rem;
 
   @media (max-width: 400px) {
-    width: 170px
+    min-width: 150px
+    max-width: 150px;
   }
 
   h3 {
