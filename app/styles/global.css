@@ -104,6 +104,16 @@ main {
   display: flex;
 }
 
-a, button {
-  -webkit-tap-highlight-color: transparent;
+button,
+textarea,
+input,
+select,
+a {
+  -webkit-tap-highlight-color: #ded9d1;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
