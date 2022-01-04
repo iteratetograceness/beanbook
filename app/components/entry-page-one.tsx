@@ -72,7 +72,7 @@ function EntryPageOne({ register, entry }: { register: Function, entry?: any }) 
       <input 
         type='date'
         {...register('roast_date')}
-        defaultValue={ entry && entry.roast_date ? new Date(Number(entry.roast_date)).toISOString().split('T')[0] : 0 }
+        defaultValue={ entry && entry.roast_date ? new Date(entry.roast_date).toISOString().split('T')[0] : 0 }
       />
 
     </Container>
