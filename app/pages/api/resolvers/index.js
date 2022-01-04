@@ -71,7 +71,7 @@ export const resolvers =
       getRecentEntries: async (root, args, context, info) => {
         try {
           const userid = args.userid;
-          const query = `SELECT * FROM entries WHERE userid = $1 ORDER BY created_on DESC LIMIT 3`;
+          const query = `SELECT * FROM entries WHERE userid = $1 ORDER BY created_on DESC LIMIT 8`;
           const entries = await pool.query(query, [userid]);
           console.log(entries.rows)
           return entries.rows;

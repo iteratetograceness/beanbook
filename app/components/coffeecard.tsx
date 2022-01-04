@@ -14,16 +14,16 @@ const Container = styled.div`
   background-color: ${props => props.theme.colors.light};
   border-radius: 2rem;
   padding: 2rem;
-  width: 'fill-available';
   max-width: 210px;
   min-width: 200px;
   min-height: 200px;
   max-height: 210px;
   gap: 1rem;
+  position: relative;
+  width: 100%;
 
-  @media (max-width: 390px) {
-    min-width: 160px;
-    max-width: 160px;
+  @media (max-width: 415px) {
+    min-width: 135px;
   }
 
   h3 {

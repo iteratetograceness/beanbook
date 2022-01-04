@@ -4,22 +4,17 @@ import styled from "styled-components";
 import { CoffeeCardType } from "../lib/types/entries";
 
 const GridContainer = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(calc(110px + 4rem), calc(240px + 4rem)));
   align-content: center;
-
-  @media (min-width: 600px) {
-    justify-content: flex-start;
-  }
 `;
 
 const CoffeeCardContainer = styled.div`
   display: flex;
-  flex-basis: calc(100% / 3 - 4rem);
   border: 3px solid ${props => props.theme.colors.medium};
   border-radius: 2rem;
-  margin: 1.5rem;
+  margin: 1rem;
+  min-width: 200px;
 `;
 
 function Grid({ type, entries }: { type: string, entries: CoffeeCardType[] }) {
