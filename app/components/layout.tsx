@@ -5,6 +5,9 @@ import Footer from './footer';
 import styled from 'styled-components';
 import Error from "../pages/_error";
 import { useSession } from "next-auth/react";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import Loading from './loading';
 
 const Container = styled.div`
     display flex;
@@ -29,7 +32,24 @@ type Props = {
 }
 
 const Layout = ({ children, title = 'beanbook' }: Props) => {
+    const router = useRouter();
     const { status } = useSession()
+
+    const [ loading, setLoading ] = useState(false);
+
+    useEffect(() => {
+        const handleRouteChange = () => {
+        setLoading(!loading)
+        }
+
+        router.events.on('routeChangeStart', handleRouteChange)
+
+        return () => {
+        router.events.off('routeChangeStart', handleRouteChange)
+        }
+    }, [])
+
+    if (loading) return <Loading/>
 
     if (status == "authenticated") {
         return (

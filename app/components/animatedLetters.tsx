@@ -1,12 +1,13 @@
 // Taken from https://www.notion.so/Animate-Banner-Letters-Header-de1ee79fe874493481cc70739a2491a6
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import styled from "styled-components";
 import Link from 'next/link'; 
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from "next-auth/react";
+import Loading from "./loading";
 
 const Letter = styled(motion.span)`
   font-size: 5rem;
@@ -84,16 +85,32 @@ type AnimatedLettersProps = {
 }
 
 const AnimatedLetters = ({ title }: AnimatedLettersProps) => {
+
   const titleArr = title;
 
   const router = useRouter();
   const { status } = useSession()
+  const [ loading, setLoading ] = useState(false);
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setLoading(!loading)
+    }
+
+    router.events.on('routeChangeStart', handleRouteChange)
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange)
+    }
+  }, [])
 
   useEffect(() => {
     router.prefetch('/home')
   }, [router])
 
-  return(
+  if (loading) return <Loading/>
+
+  else return (
     <>
       <Container
         variants={containerAni}

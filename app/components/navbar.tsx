@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import Button from './button';
@@ -6,6 +6,8 @@ import { useMediaQuery } from "react-responsive";
 import { bubble as Menu } from 'react-burger-menu';
 import { SettingFilled } from '@ant-design/icons';
 import { signOut } from "next-auth/react"
+import Loading from './loading';
+import { useRouter } from 'next/router';
 
 const Nav = styled.nav`
   display: grid;
@@ -108,12 +110,31 @@ var styles = {
 }
 
 const NavBar: FunctionComponent = () => {
+  
+  const router = useRouter();
 
   const isMobile = useMediaQuery({ maxWidth: 600 });
 
   const handleSignOut = async () => {
-    signOut({ callbackUrl: 'http://localhost:3000/' })
+    const data = await signOut({ redirect: false, callbackUrl: process.env.NEXT_PUBLIC_SITE })
+    router.push(data.url)
   }
+
+  const [ loading, setLoading ] = useState(false);
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setLoading(!loading)
+    }
+
+    router.events.on('routeChangeStart', handleRouteChange)
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange)
+    }
+  }, [])
+
+  if (loading) return <Loading/>
 
   if (isMobile) 
     return (

@@ -5,7 +5,8 @@ import LoginForm from '../components/loginform';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { useSession } from "next-auth/react";
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import Loading from '../components/loading';
 
 const FixedAuthLayout = styled(AuthLayout)`
   height: 100vh;
@@ -13,14 +14,32 @@ const FixedAuthLayout = styled(AuthLayout)`
 
 const Login: NextPage = () => {
 
+  
+
   const router = useRouter()
   const { status } = useSession()
+
+  const [ loading, setLoading ] = useState(false);
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setLoading(!loading)
+    }
+
+    router.events.on('routeChangeStart', handleRouteChange)
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange)
+    }
+  }, [])
 
   if (status === "authenticated") router.push('/home')
 
   useEffect(() => {
     router.prefetch('/home')
   }, [router])
+
+  if (loading) return <Loading/>
 
   return (
     <FixedAuthLayout>
