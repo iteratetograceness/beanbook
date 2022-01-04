@@ -10,7 +10,7 @@ import EntryPageTwo from '../components/entry-page-two';
 import EntryPageThree from '../components/entry-page-three';
 import { LeftCircleFilled, RightCircleFilled } from '@ant-design/icons';
 import Button from '../components/button';
-import { EntryReducer, DefaultEntry } from '../lib/reducers/entryReducer';
+import { DefaultEntry, EmptyEntry } from '../lib/types/default-entry';
 import { v1 as uuid } from 'uuid';
 import { useSession } from "next-auth/react";
 import { useMutation } from '@apollo/client';
@@ -126,9 +126,9 @@ function AddBeans() {
   const { data: session } = useSession()
   const [ page, setPage ] = useState(1)
   const [ stars, setStars ] = useState(1)
-  const [ brew_method, setBrewMethod ] = useState([])
-  const [ taste_tags, setTasteTags ] = useState([])
-  const [ entry, setEntry ] = useReducer(EntryReducer, DefaultEntry)
+  const [ brew_method, setBrewMethod ] = useState<string[]>([])
+  const [ taste_tags, setTasteTags ] = useState<string[]>([])
+  const [ entry, setEntry ] = useState<DefaultEntry>(EmptyEntry as DefaultEntry)
 
   const [addEntryMutation, { loading, error }] = useMutation(ADD_ENTRY);
 
@@ -139,7 +139,7 @@ function AddBeans() {
   const addEntry = async (e: MouseEvent) => {
     e.preventDefault()
 
-    let newEntry = entry
+    let newEntry: DefaultEntry = entry
     const values = getValues()
     const user_id = session?.user.user_id
 

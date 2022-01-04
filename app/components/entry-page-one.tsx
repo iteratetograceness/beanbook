@@ -6,6 +6,10 @@ const Container = styled.div`
   height: 100%;
   width: 100%;
 
+  #date-input {
+    background-color: white;
+  }
+
   p {
     font-size: .8rem;
     color: black;
@@ -70,6 +74,7 @@ function EntryPageOne({ register, entry }: { register: Function, entry?: any }) 
       
       <Label>roast date</Label>
       <input 
+        id='date-input'
         type='date'
         {...register('roast_date')}
         defaultValue={ entry && entry.roast_date ? new Date(entry.roast_date).toISOString().split('T')[0] : 0 }

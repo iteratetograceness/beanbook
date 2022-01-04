@@ -1,4 +1,4 @@
-import { useState, useReducer, useLayoutEffect } from 'react'
+import { useState, useLayoutEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -10,11 +10,10 @@ import EntryPageTwo from '../components/entry-page-two';
 import EntryPageThree from '../components/entry-page-three';
 import { LeftCircleFilled, RightCircleFilled } from '@ant-design/icons';
 import Button from '../components/button';
-import { EntryReducer } from '../lib/reducers/entryReducer';
+import { DefaultEntry, EmptyEntry } from '../lib/types/default-entry';
 import { useMutation } from '@apollo/client';
 import { UPDATE_ENTRY } from '../lib/queries';
 import Loading from '../components/loading';
-import { resolve } from 'dns/promises';
 
 const schema = beanSchema
 
@@ -125,9 +124,9 @@ function EditBeans() {
 
   const [ page, setPage ] = useState(1)
   const [ stars, setStars ] = useState(1)
-  const [ brew_method, setBrewMethod ] = useState([])
-  const [ taste_tags, setTasteTags ] = useState([])
-  const [ entry, setEntry ] = useReducer(EntryReducer, router.query)
+  const [ brew_method, setBrewMethod ] = useState<string[]>([])
+  const [ taste_tags, setTasteTags ] = useState<string[]>([])
+  const [ entry, setEntry ] = useState<DefaultEntry>(router.query as DefaultEntry | any)
 
   const [updateEntry, { loading, error }] = useMutation(UPDATE_ENTRY);
 
@@ -138,21 +137,22 @@ function EditBeans() {
   const editEntry = async (e: MouseEvent) => {
     e.preventDefault()
 
-    const values = getValues()
+    const values = getValues();
 
-    let newEntry: any = {
+    console.log(values)
+
+    let newEntry: DefaultEntry = {
       ...values,
       price: values.price ? Number(values.price) : null,
       roast_date: values.roast_date ? new Date(values.roast_date) : null,
       brew_method: brew_method,
       taste_tags: taste_tags,
       rating: Number(stars),
-      favorited: entry.favorited === "true" ? true : false,
       id: entry.id
     }
-    
-    console.log('update entry', newEntry)
 
+    console.log(newEntry)
+    
     updateEntry({ variables: { entry: newEntry } })
       .then(res => {
         console.log(res)
@@ -181,33 +181,32 @@ function EditBeans() {
   }
 
   useLayoutEffect(() => {
-    let entry: any = router.query;
+    let old: any = router.query;
 
-    if (typeof entry.brew_method === 'string') {
+    if (typeof old.brew_method === 'string') {
       let brew_methods = []
       brew_methods.push(entry.brew_method)
-      entry.brew_method = brew_methods
+      old.brew_method = brew_methods
     } 
 
-    if (typeof entry.taste_tags === 'string') {
+    if (typeof old.taste_tags === 'string') {
       let taste_tags = []
       taste_tags.push(entry.taste_tags)
-      entry.taste_tags = taste_tags
+      old.taste_tags = taste_tags
     } 
 
-    entry = {
-      ...entry,
-      roast_date: entry.roast_date ? Number(entry.roast_date) : null,
-      favorited: entry.favorited === 'true' ? true : false,
-      price: entry.price ? Number(entry.price) : null,
-      rating: entry.rating ? Number(entry.rating) : null,
+    old = {
+      ...old,
+      roast_date: old.roast_date ? Number(old.roast_date) : null,
+      favorited: old.favorited === 'true' ? true : false,
+      price: old.price ? Number(old.price) : null,
+      rating: old.rating ? Number(old.rating) : null,
     }
-
-    setEntry(entry)
-    setStars(entry.rating)
-    setBrewMethod(entry.brew_method)
-    setTasteTags(entry.taste_tags)
-  }, [entry])
+    setEntry(old)
+    setStars(old.rating)
+    setBrewMethod(old.brew_method)
+    setTasteTags(old.taste_tags)
+  }, [router.query])
 
   if (loading) {
     return <Loading/>

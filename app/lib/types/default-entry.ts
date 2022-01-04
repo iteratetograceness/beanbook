@@ -1,4 +1,4 @@
-export const DefaultEntry = {
+export const EmptyEntry = {
   id: '',
   userid: '',
   favorited: false,
@@ -15,24 +15,11 @@ export const DefaultEntry = {
   taste_tags: []
 }
 
-export const EntryReducer = (entry: DefaultEntry, { type, payload }: { type: string, payload: any }) => {
-  switch (type) {
-    case 'UPDATE_ENTRY':
-      return {
-        ...entry,
-        ...payload
-      }
-
-    default:
-      return entry
-  }
-}
-
 export interface DefaultEntry {
   id: string,
-  userid: string | any,
-  favorited: boolean,
-  origin_name: string,
+  userid?: string | any,
+  favorited?: boolean,
+  origin_name?: string,
   price?: number | null,
   roaster?: string,
   producer?: string,
@@ -41,6 +28,6 @@ export interface DefaultEntry {
   process?: string,
   rating: number | null,
   notes?: string,
-  brew_method?: [string] | never[],
-  taste_tags?: [string] | never[],
+  brew_method?: string[] | [],
+  taste_tags?: string[] | [],
 }

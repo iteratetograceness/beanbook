@@ -173,7 +173,7 @@ const Entry = ({ entry }: { entry: any }) => {
   }
 
   const handleDelete = () => {
-    
+
   }
 
   const listOfMethods = entry.brew_method.map((method: string, index: number) => {
@@ -216,7 +216,7 @@ const Entry = ({ entry }: { entry: any }) => {
           <p><DollarCircleFilled style={{ fontSize: '1rem' }}/>price: ${entry.price}</p>
           <p><ShopOutlined style={{ fontSize: '1rem' }}/>producer: {entry.producer}</p>
           <p><FireFilled style={{ fontSize: '1rem' }}/>roaster: {entry.roaster}</p>
-          <p><CalendarFilled style={{ fontSize: '1rem' }}/>roast date: {entry.roast_date}</p>
+          <p><CalendarFilled style={{ fontSize: '1rem' }}/>roast date: {(new Date(Number(entry.roast_date))).toDateString()}</p>
           <p><ExperimentOutlined style={{ fontSize: '1rem' }}/>process: {entry.process}</p>
           <p><TableOutlined style={{ fontSize: '1rem' }}/>variety: {entry.variety}</p>
         </Details>
