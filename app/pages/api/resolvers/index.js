@@ -141,12 +141,16 @@ export const resolvers =
         }
       },
       updateEntry: async (root, args, context, info) => {
+
+        console.log(args)
  
         try {
 
           let query = 'UPDATE entries SET ';
 
           const { entry } = args;
+
+          console.log(entry)
 
           const length = Object.keys(entry).length - 1;
           let i = 1;

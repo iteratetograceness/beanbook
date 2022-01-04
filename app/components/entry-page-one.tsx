@@ -33,7 +33,9 @@ const Label = styled.label`
   font-family: Inconsolata;
 `;
 
-function EntryPageOne({ register }: { register: Function }) {
+function EntryPageOne({ register, entry }: { register: Function, entry?: any }) {
+
+  console.log(entry)
 
   return (
     <Container>
@@ -42,30 +44,35 @@ function EntryPageOne({ register }: { register: Function }) {
       <input 
         type='text'
         {...register('origin_name')}
+        defaultValue={entry ? entry.origin_name : ''}
       />
 
       <Label>price</Label>
       <input 
         type='number'
         {...register('price')}
+        defaultValue={entry ? entry.price : ''}
       />
 
       <Label>roaster</Label>
       <input 
         type='text'
         {...register('roaster')}
+        defaultValue={entry ? entry.roaster : ''}
       />
 
       <Label>producer</Label>
       <input 
         type='text'
         {...register('producer')}
+        defaultValue={entry ? entry.producer: ''}
       />
       
       <Label>roast date</Label>
       <input 
         type='date'
         {...register('roast_date')}
+        defaultValue={ entry && entry.roast_date ? new Date(Number(entry.roast_date)).toISOString().split('T')[0] : 0 }
       />
 
     </Container>

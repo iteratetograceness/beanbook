@@ -62,7 +62,7 @@ const Label = styled.label`
   font-family: Inconsolata;
 `;
 
-function EntryPageOne({ stars, setStars, register }: { stars: number, setStars: Function, register: Function }) {
+function EntryPageOne({ stars, setStars, register, entry }: { stars: number, setStars: Function, register: Function, entry?: any }) {
   
   const handleRating = (e: MouseEvent) => {
     e.preventDefault()
@@ -98,18 +98,21 @@ function EntryPageOne({ stars, setStars, register }: { stars: number, setStars: 
       <textarea
         className='notes-input'
         {...register('notes')}
+        defaultValue={entry ? entry.notes : ''}
       />
 
       <Label>process</Label>
       <input 
         type='text'
         {...register('process')}
+        defaultValue={entry ? entry.process : ''}
       />
 
       <Label>variety</Label>
       <input 
         type='text'
         {...register('variety')}
+        defaultValue={entry ? entry.variety : ''}
       />
 
     </Container>

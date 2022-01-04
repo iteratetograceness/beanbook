@@ -51,11 +51,12 @@ const brewMethods = [ 'cupping', 'drip', 'espresso', 'siphon', 'aeropress', 'che
 
 const tasteTags = [ 'sweet', 'acidic', 'bitter', 'salty', 'spicy', 'berry', 'fruity', 'citrus', 'floral', 'chocolate', 'herbal', 'nutty', 'savory', 'caramel', 'smoky', 'clean' ]
 
-function EntryPageThree({ brew_method, setBrewMethod, taste_tags, setTasteTags }: any) {
-
+function EntryPageThree({ brew_method, setBrewMethod, taste_tags, setTasteTags, entry }: { brew_method: string[], setBrewMethod: Function, taste_tags: string[], setTasteTags: Function, entry?: any }) {
+  
   const listOfMethods = brewMethods.map((method: string, index: number) => {
     return (
-      <button key={index} onClick={(e: MouseEvent) => handleClickMethods(e)} className='no-toggle'>
+      <button key={index} onClick={(e: MouseEvent) => handleClickMethods(e)} 
+        className={ entry && brew_method.includes(method) ? 'filter-toggled' : 'no-toggle' }>
         <CheckCircleOutlined style={{ display: 'none' }}/>
         {method}
       </button>
@@ -64,7 +65,8 @@ function EntryPageThree({ brew_method, setBrewMethod, taste_tags, setTasteTags }
 
   const listOfTags = tasteTags.map((taste: string, index: number) => {
     return (
-      <button key={index} onClick={(e: MouseEvent) => handleClickTags(e)} className='no-toggle'>
+      <button key={index} onClick={(e: MouseEvent) => handleClickTags(e)} 
+        className={ entry && taste_tags.includes(taste) ? 'filter-toggled' : 'no-toggle' }>
         <CheckCircleOutlined style={{ display: 'none' }}/>
         {taste}
       </button>
@@ -76,9 +78,10 @@ function EntryPageThree({ brew_method, setBrewMethod, taste_tags, setTasteTags }
     const method = e.currentTarget.textContent
     const child = e.currentTarget.children[0] as HTMLElement
     let className = e.currentTarget.className
-    if (brew_method.includes(method)) {
+    console.log(method, brew_method)
+    if (brew_method.includes(method as any)) {
       const new_methods = brew_method.filter((str: string) => str !== method)
-      setTasteTags(new_methods)
+      setBrewMethod(new_methods)
     } else setBrewMethod((prev:any) => [...prev, method])
     if (className === 'no-toggle') {
       e.currentTarget.className = 'filter-toggled'
@@ -94,7 +97,8 @@ function EntryPageThree({ brew_method, setBrewMethod, taste_tags, setTasteTags }
     const tag = e.currentTarget.textContent
     const child = e.currentTarget.children[0] as HTMLElement
     let className = e.currentTarget.className
-    if (taste_tags.includes(tag)) {
+    console.log(tag, taste_tags)
+    if (taste_tags.includes(tag as any)) {
       const new_taste_tags = taste_tags.filter((taste: string) => taste !== tag)
       setTasteTags(new_taste_tags)
     } else setTasteTags((prev:any) => [...prev, tag])

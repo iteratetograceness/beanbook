@@ -1,4 +1,4 @@
-import { useState, useReducer } from 'react'
+import { useState, useReducer, useLayoutEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -10,12 +10,11 @@ import EntryPageTwo from '../components/entry-page-two';
 import EntryPageThree from '../components/entry-page-three';
 import { LeftCircleFilled, RightCircleFilled } from '@ant-design/icons';
 import Button from '../components/button';
-import { EntryReducer, DefaultEntry } from '../lib/reducers/entryReducer';
-import { v1 as uuid } from 'uuid';
-import { useSession } from "next-auth/react";
+import { EntryReducer } from '../lib/reducers/entryReducer';
 import { useMutation } from '@apollo/client';
-import { ADD_ENTRY } from '../lib/queries';
+import { UPDATE_ENTRY } from '../lib/queries';
 import Loading from '../components/loading';
+import { resolve } from 'dns/promises';
 
 const schema = beanSchema
 
@@ -120,46 +119,46 @@ const ButtonContainer = styled.div`
   }
 `
 
-function AddBeans() {
+function EditBeans() {
 
   const router = useRouter()
-  const { data: session } = useSession()
+
   const [ page, setPage ] = useState(1)
   const [ stars, setStars ] = useState(1)
   const [ brew_method, setBrewMethod ] = useState([])
   const [ taste_tags, setTasteTags ] = useState([])
-  const [ entry, setEntry ] = useReducer(EntryReducer, DefaultEntry)
+  const [ entry, setEntry ] = useReducer(EntryReducer, router.query)
 
-  const [addEntryMutation, { loading, error }] = useMutation(ADD_ENTRY);
+  const [updateEntry, { loading, error }] = useMutation(UPDATE_ENTRY);
 
   const { register, getValues } = useForm({
     resolver: yupResolver(schema)
   });
 
-  const addEntry = async (e: MouseEvent) => {
+  const editEntry = async (e: MouseEvent) => {
     e.preventDefault()
 
-    let newEntry = entry
     const values = getValues()
-    const user_id = session?.user.user_id
 
-    newEntry = {
-      ...newEntry,
+    let newEntry: any = {
       ...values,
       price: values.price ? Number(values.price) : null,
       roast_date: values.roast_date ? new Date(values.roast_date) : null,
       brew_method: brew_method,
       taste_tags: taste_tags,
       rating: Number(stars),
-      userid: user_id,
-      id: uuid().toString()
+      favorited: entry.favorited === "true" ? true : false,
+      id: entry.id
     }
+    
+    console.log('update entry', newEntry)
 
-    addEntryMutation({ variables: { entry: newEntry } })
+    updateEntry({ variables: { entry: newEntry } })
       .then(res => {
-        if (!res.data.addEntry.validation || error) {
+        console.log(res)
+        if (!res.data.updateEntry.validation || error) {
           // TODO: Custom error popup/toast
-          alert(error || res.data.addEntry.message)
+          alert(error || res.data.updateEntry.message)
         } else {
           router.push({
             pathname: `/entry/${newEntry.origin_name}`,
@@ -181,6 +180,35 @@ function AddBeans() {
     setPage(prev => page - 1)
   }
 
+  useLayoutEffect(() => {
+    let entry: any = router.query;
+
+    if (typeof entry.brew_method === 'string') {
+      let brew_methods = []
+      brew_methods.push(entry.brew_method)
+      entry.brew_method = brew_methods
+    } 
+
+    if (typeof entry.taste_tags === 'string') {
+      let taste_tags = []
+      taste_tags.push(entry.taste_tags)
+      entry.taste_tags = taste_tags
+    } 
+
+    entry = {
+      ...entry,
+      roast_date: entry.roast_date ? Number(entry.roast_date) : null,
+      favorited: entry.favorited === 'true' ? true : false,
+      price: entry.price ? Number(entry.price) : null,
+      rating: entry.rating ? Number(entry.rating) : null,
+    }
+
+    setEntry(entry)
+    setStars(entry.rating)
+    setBrewMethod(entry.brew_method)
+    setTasteTags(entry.taste_tags)
+  }, [entry])
+
   if (loading) {
     return <Loading/>
   } else {
@@ -190,15 +218,15 @@ function AddBeans() {
             <div className="first-col-container">
               <div className='first-col'>
                 <h1>+</h1>
-                <h1 className='new-keyword'>new</h1>
+                <h1 className='new-keyword'>edit</h1>
                 <h1>entry</h1>
               </div>
             </div>
 
             <form className='second-col' id='entry-form'>
-              { page === 1 && <EntryPageOne register={register} /> }
-              { page === 2 && <EntryPageTwo stars={stars} setStars={setStars} register={register} /> }
-              { page === 3 && <EntryPageThree brew_method={brew_method} setBrewMethod={setBrewMethod} taste_tags={taste_tags} setTasteTags={setTasteTags} /> }
+              { page === 1 && <EntryPageOne register={register} entry={entry}/> }
+              { page === 2 && <EntryPageTwo stars={stars} setStars={setStars} register={register} entry={entry}/> }
+              { page === 3 && <EntryPageThree brew_method={brew_method} setBrewMethod={setBrewMethod} taste_tags={taste_tags} setTasteTags={setTasteTags} entry={entry} /> }
               <ButtonContainer>
                 { page > 1 && page <= 3 && <LeftCircleFilled style={arrowStyles} onClick={prevPage} /> }
                 { page < 3 && <RightCircleFilled 
@@ -209,7 +237,7 @@ function AddBeans() {
                   inverse='false' 
                   variant='primary' 
                   form='entry-form'
-                  onClick={(e: any) => addEntry(e)}
+                  onClick={(e: any) => editEntry(e)}
                 >
                   Submit
                 </Button> }
@@ -221,4 +249,4 @@ function AddBeans() {
   }
 }
 
-export default AddBeans
+export default EditBeans

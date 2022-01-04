@@ -147,8 +147,6 @@ const Entry = ({ entry }: { entry: any }) => {
 
   const [updateEntry, { loading, error } ] = useMutation(UPDATE_ENTRY);
 
-  const [stars, setStars] = useState(entry.rating)
-
   const handleLike = async (e: MouseEvent) => {
     e.preventDefault();
     const update = {
@@ -158,9 +156,16 @@ const Entry = ({ entry }: { entry: any }) => {
     await updateEntry({ variables: { entry: update } })
     setLiked(!liked);
     window.location.reload();
-}
+  }
 
-  const handleStars = () => {}
+  const handleEdit = () => {
+    const oldValues = {...entry, id: router.query.id};
+    console.log(oldValues)
+    router.push({
+      pathname: '/edit',
+      query: oldValues
+    });
+  }
 
   const listOfMethods = entry.brew_method.map((method: string, index: number) => {
     return (
@@ -196,7 +201,7 @@ const Entry = ({ entry }: { entry: any }) => {
           { liked ? <HeartFilled onClick={(e: any) => handleLike(e)} style={{ fontSize: '2rem' }}/> 
           : <HeartOutlined onClick={(e: any) => handleLike(e)} style={{ fontSize: '2rem' }}/>}
           <h1>{entry.origin_name}</h1>
-          <button>
+          <button onClick={handleEdit}>
             edit <FormOutlined className='edit' />
           </button>
         </Header>

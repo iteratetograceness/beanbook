@@ -23,10 +23,6 @@ export const EntryReducer = (entry: DefaultEntry, { type, payload }: { type: str
         ...payload
       }
 
-    case 'ADD_ENTRY':
-
-    case 'RESET_ENTRY':
-
     default:
       return entry
   }

@@ -15,14 +15,15 @@ const Container = styled.div`
   border-radius: 2rem;
   padding: 2rem;
   width: 'fill-available';
+  max-width: 210px;
   min-width: 200px;
   min-height: 200px;
   max-height: 210px;
   gap: 1rem;
 
-  @media (max-width: 400px) {
-    min-width: 150px;
-    max-width: 150px;
+  @media (max-width: 390px) {
+    min-width: 160px;
+    max-width: 160px;
   }
 
   h3 {
@@ -60,7 +61,7 @@ function CoffeeCard({ origin_name, rating, id, favorited }: CoffeeCardProps) {
   const [stars, setStars] = useState(rating)
   const router = useRouter();
 
-  const [updateEntry, { data, loading, error }] = useMutation(UPDATE_ENTRY);
+  const [updateEntry] = useMutation(UPDATE_ENTRY);
 
   const handleRating = async (e: MouseEvent) => {
     e.preventDefault()
