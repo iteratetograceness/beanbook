@@ -11,7 +11,7 @@ import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import Loading from "../components/loading";
 
-const Home = ({ userid }: { userid: string }) => {
+const Home = ({ userid }: { userid: string | undefined }) => {
 
   const router = useRouter();
   
@@ -44,6 +44,13 @@ const Home = ({ userid }: { userid: string }) => {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const session = await getSession({ req: context.req })
+
+  if (!session) {
+    return {
+      notFound: true
+    }
+  }
+
   const userid = session?.user?.user_id
   const variables = { userid }
 

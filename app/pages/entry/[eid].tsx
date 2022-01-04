@@ -7,7 +7,7 @@ import Layout from '../../components/layout';
 import { initializeApollo, addApolloState } from '../../lib/client';
 import { useMutation } from "@apollo/client";
 import { GET_ENTRY, UPDATE_ENTRY } from '../../lib/queries';
-import { HeartFilled, HeartOutlined, DollarCircleFilled, CoffeeOutlined, ShopOutlined, CalendarFilled, ExperimentOutlined, TableOutlined, PaperClipOutlined, FireFilled, TagOutlined, FormOutlined } from '@ant-design/icons';
+import { HeartFilled, HeartOutlined, DollarCircleFilled, CoffeeOutlined, ShopOutlined, CalendarFilled, ExperimentOutlined, TableOutlined, PaperClipOutlined, FireFilled, TagOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 
 
@@ -55,18 +55,6 @@ const Header = styled.div`
     margin-left: 20px;
     flex-grow: 1;
   }
-
-  .edit {
-    margin-left: 1rem;
-  }
-
-  button {
-    padding: .5rem 1rem;
-    border: none;
-    border-radius: 2rem;
-    background-color: ${props => props.theme.colors.dark};
-    color: ${props => props.theme.colors.light};
-  }
 `;
 
 const Details = styled.div`
@@ -104,8 +92,9 @@ const Notes = styled.div`
 const MethodsAndTags = styled.div`
   display: grid;
   grid-column-gap: 1rem;
-  grid-template-columns: repeat(2, minmax(200px, 1fr));
-  margin-top: 1rem;
+  grid-row-gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin: 1rem 0;
 `
 
 const ArrContainer = styled.div`
@@ -139,6 +128,22 @@ const Tag = styled.div`
   color: #ded9d1;
 `
 
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+
+  button {
+    padding: .5rem 1rem;
+    border: none;
+    border-radius: 2rem;
+    width: fit-content;
+    background-color: ${props => props.theme.colors.dark};
+    color: ${props => props.theme.colors.light};
+  }
+`;
+
 const Entry = ({ entry }: { entry: any }) => {
 
   const router = useRouter();
@@ -165,6 +170,10 @@ const Entry = ({ entry }: { entry: any }) => {
       pathname: '/edit',
       query: oldValues
     });
+  }
+
+  const handleDelete = () => {
+    
   }
 
   const listOfMethods = entry.brew_method.map((method: string, index: number) => {
@@ -201,9 +210,6 @@ const Entry = ({ entry }: { entry: any }) => {
           { liked ? <HeartFilled onClick={(e: any) => handleLike(e)} style={{ fontSize: '2rem' }}/> 
           : <HeartOutlined onClick={(e: any) => handleLike(e)} style={{ fontSize: '2rem' }}/>}
           <h1>{entry.origin_name}</h1>
-          <button onClick={handleEdit}>
-            edit <FormOutlined className='edit' />
-          </button>
         </Header>
         <hr/>
         <Details>
@@ -228,6 +234,16 @@ const Entry = ({ entry }: { entry: any }) => {
             {listOfTags}
           </ArrContainer>
         </MethodsAndTags>
+        <hr/>
+        <ButtonContainer>
+          <button onClick={handleEdit}>
+              edit <FormOutlined />
+          </button>  
+          <button onClick={handleDelete}>
+              delete <DeleteOutlined />
+          </button>  
+        </ButtonContainer>
+        
       </Container>
       
     </Layout>
