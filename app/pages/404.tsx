@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { AlertFilled } from '@ant-design/icons';
 import Button from '../components/button';
+import { useSession } from 'next-auth/react';
 
 const Container = styled.div`
   display: flex;
@@ -18,12 +19,15 @@ const Container = styled.div`
 `;
 
 function Custom404() {
+  const session = useSession();
+
   return (
     <Container>
       <AlertFilled style={{ fontSize: '50px', color: '#9c483a' }}/>
       <h1>404 - Page Not Found</h1>
       <Button inverse='true' variant='secondary' onClick={() => {
-        window.location.href = '/';
+        if (session) window.location.href = '/home';
+        else window.location.href = '/';
       }}>go back</Button>
     </Container>
   )
