@@ -6,7 +6,7 @@ import Loading from '../../components/loading';
 import Layout from '../../components/layout';
 import { initializeApollo, addApolloState } from '../../lib/client';
 import { useMutation } from "@apollo/client";
-import { GET_ENTRY, UPDATE_ENTRY } from '../../lib/queries';
+import { GET_ENTRY, UPDATE_ENTRY, DELETE_ENTRY } from '../../lib/queries';
 import { HeartFilled, HeartOutlined, DollarCircleFilled, CoffeeOutlined, ShopOutlined, CalendarFilled, ExperimentOutlined, TableOutlined, PaperClipOutlined, FireFilled, TagOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 
@@ -150,7 +150,8 @@ const Entry = ({ entry }: { entry: any }) => {
   
   const [liked, setLiked] = useState(entry.favorited);
 
-  const [updateEntry, { loading, error } ] = useMutation(UPDATE_ENTRY);
+  const [ updateEntry, { loading, error } ] = useMutation(UPDATE_ENTRY);
+  const [ deleteEntry ] = useMutation(DELETE_ENTRY);
 
   const handleLike = async (e: MouseEvent) => {
     e.preventDefault();
@@ -173,7 +174,14 @@ const Entry = ({ entry }: { entry: any }) => {
   }
 
   const handleDelete = () => {
-
+    const entryID = router.query.id
+    deleteEntry({ variables: { entryID } })
+      .then((res) => {
+        if (res.data.deleteEntry.validation) {
+          window.location.href = '/home'
+        } else alert('Could not delete entry!');
+      })
+      .catch(err => console.log(err));
   }
 
   const listOfMethods = entry.brew_method.map((method: string, index: number) => {

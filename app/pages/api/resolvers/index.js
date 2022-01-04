@@ -184,10 +184,10 @@ export const resolvers =
         }
       },
       deleteEntry: async (root, args, context, info) => {
-        const { id } = args;
+        const { entryID } = args;
         try {
           const query = `DELETE FROM entries WHERE id = $1`;
-          await pool.query(query, [id]);
+          await pool.query(query, [ entryID ]);
           return {
             validation: true,
             message: 'Entry deleted successfully'

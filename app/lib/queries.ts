@@ -91,3 +91,11 @@ export const GET_RECENT_ENTRIES = gql`
     }
   }
 `;
+
+export const DELETE_ENTRY = gql`
+  mutation DeleteEntry($entryID: ID!) {
+    deleteEntry(entryID: $entryID) {
+      validation
+    }
+  }
+`;
