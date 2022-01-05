@@ -26,7 +26,4 @@ export const beanSchema = yup.object().shape({
   notes: yup.string(),
   brew_method: yup.array().of(yup.string()),
   taste_tags: yup.array().of(yup.string()),
-  created_on: yup.date().default(function () {
-    return new Date();
-  }),
 });

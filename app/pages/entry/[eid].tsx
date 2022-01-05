@@ -210,7 +210,7 @@ const Entry = ({ entry }: { entry: any }) => {
       </Head>
       <Container>
         <TopDetails>
-          <p>{(new Date(Number(entry.created_on))).toDateString()}</p>
+          <p>{new Date(((new Date(Number(entry.created_on))).getTime())-((new Date(Number(entry.created_on)))).getTimezoneOffset() * 60000).toDateString()}</p>
           <Rating>{entry.rating} / 5</Rating>
         </TopDetails>
         <hr/>
