@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { ApolloClient, HttpLink, InMemoryCache, NormalizedCacheObject, ApolloLink, concat } from '@apollo/client';
-import { relayStylePagination } from "@apollo/client/utilities";
 import merge from 'deepmerge';
 import isEqual from 'lodash/isEqual';
 
@@ -30,15 +29,7 @@ function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
     link: concat(authMiddleware, httpLink),
-    cache: new InMemoryCache({
-      typePolicies: {
-        Query: {
-          fields: {
-            posts: relayStylePagination(),
-          },
-        },
-      },
-    }),
+    cache: new InMemoryCache(),
   })
 }
 
