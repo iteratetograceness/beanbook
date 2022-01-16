@@ -22,6 +22,7 @@ export const SIGNUP = gql`
 export const ADD_ENTRY = gql`
 mutation Mutation($entry: EntryInput) {
   addEntry(entry: $entry) {
+    id
     validation
     message
   }
@@ -31,6 +32,7 @@ mutation Mutation($entry: EntryInput) {
 export const GET_ENTRY = gql`
   query GetEntry($id: ID!) {
     getEntry(id: $id) {
+      id
       origin_name
       favorited
       price
@@ -64,6 +66,7 @@ export const UPDATE_ENTRY = gql`
   mutation UpdateEntry($entry: UpdateEntryInput) {
     updateEntry(entry: $entry) {
       validation
+      id
     }
   }
 `;
