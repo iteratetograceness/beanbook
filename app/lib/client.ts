@@ -11,7 +11,7 @@ let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 function createApolloClient() {
 
   const httpLink = new HttpLink({
-    uri: `${process.env.NEXT_PUBLIC_SITE}/api/graphql`,
+    uri: `${process.env.NEXT_PUBLIC_SITE}api/graphql`,
     // uri: 'http://localhost:3000/api/graphql',
   })
 
