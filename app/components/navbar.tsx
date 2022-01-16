@@ -147,7 +147,7 @@ const NavBar: FunctionComponent = () => {
           
               <a className='right-nav' href='/mybeans'>my beans</a>
           
-              <a className='right-nav' href='/home'>settings</a>
+              {/* <a className='right-nav' href='/home'>settings</a> */}
           
               <a className='right-nav' onClick={handleSignOut} >logout</a>
           </Menu>

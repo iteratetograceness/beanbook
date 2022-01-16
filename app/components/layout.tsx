@@ -39,13 +39,15 @@ const Layout = ({ children, title = 'beanbook' }: Props) => {
 
     useEffect(() => {
         const handleRouteChange = () => {
-        setLoading(!loading)
+
+            setLoading(!loading)
         }
 
         router.events.on('routeChangeStart', handleRouteChange)
+        router.events.on('routeChangeComplete', handleRouteChange)
 
         return () => {
-        router.events.off('routeChangeStart', handleRouteChange)
+            router.events.off('routeChangeStart', handleRouteChange)
         }
     }, [])
 
