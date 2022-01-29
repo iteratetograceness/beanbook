@@ -159,6 +159,7 @@ function AddBeans() {
       .then(res => {
         if (!res.data.addEntry.validation || error) {
           // TODO: Custom error popup/toast
+          console.log('ERROR', res, error)
           alert(error || res.data.addEntry.message)
         } else {
           router.push({

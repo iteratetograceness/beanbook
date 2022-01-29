@@ -12,6 +12,12 @@ const Container = styled.div`
   width: 100vw;
 `;
 
+const Title = styled.h1`
+  font-size: 3rem;
+  font-weight: bold;
+  color: ${props => props.theme.colors.light};
+`;
+
 const Main: NextPage = () => {
 
   return (
@@ -21,7 +27,9 @@ const Main: NextPage = () => {
       </Head>
 
       <Container>
-        <AnimatedLetters title={['b', 'e', 'a', 'n', 'b', 'o', 'o', 'k']}/>
+        <Title>#maintenance</Title>
+        <h3>beanbook will be back soooon</h3>
+        {/* <AnimatedLetters title={['b', 'e', 'a', 'n', 'b', 'o', 'o', 'k']}/> */}
       </Container>
     </div>
   )
