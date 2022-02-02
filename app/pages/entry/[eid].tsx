@@ -1,14 +1,14 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router'
-import { GetServerSidePropsContext } from 'next'
+import useSWR from 'swr'
+import { request } from 'graphql-request'
 import styled from 'styled-components';
 import Loading from '../../components/loading';
 import Layout from '../../components/layout';
-import { initializeApollo, addApolloState } from '../../lib/client';
 import { useMutation } from "@apollo/client";
 import { GET_ENTRY, UPDATE_ENTRY, DELETE_ENTRY } from '../../lib/queries';
 import { HeartFilled, HeartOutlined, DollarCircleFilled, CoffeeOutlined, ShopOutlined, CalendarFilled, ExperimentOutlined, TableOutlined, PaperClipOutlined, FireFilled, TagOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 
 const Container = styled.div`
@@ -144,13 +144,23 @@ const ButtonContainer = styled.div`
   }
 `;
 
-const Entry = ({ entry }: { entry: any }) => {
+const fetcher = (query:any, variables:any)  => request('/api/graphql', query, variables)
 
-  const router = useRouter();
+const Entry = () => {
+
+  const router = useRouter()
+  const { id } = router.query
+  const variables = { id }
+
+  const { data: entry, error: loadingError } = useSWR([ GET_ENTRY, variables ], fetcher)
   
-  const [liked, setLiked] = useState(entry.favorited);
+  const [ liked, setLiked ] = useState(false);
 
-  const [ updateEntry, { loading, error } ] = useMutation(UPDATE_ENTRY);
+  useEffect(() => {
+    setLiked(() => entry?.getEntry.favorited)
+  }, [entry])
+
+  const [ updateEntry, { loading, error: postError } ] = useMutation(UPDATE_ENTRY);
   const [ deleteEntry ] = useMutation(DELETE_ENTRY);
 
   const handleLike = async (e: MouseEvent) => {
@@ -165,8 +175,7 @@ const Entry = ({ entry }: { entry: any }) => {
   }
 
   const handleEdit = () => {
-    const oldValues = {...entry, id: router.query.id};
-    console.log(oldValues)
+    const oldValues = {...entry.getEntry, id: router.query.id};
     router.push({
       pathname: '/edit',
       query: oldValues
@@ -184,7 +193,7 @@ const Entry = ({ entry }: { entry: any }) => {
       .catch(err => console.log(err));
   }
 
-  const listOfMethods = entry.brew_method.map((method: string, index: number) => {
+  const listOfMethods = entry?.getEntry.brew_method.map((method: string, index: number) => {
     return (
       <Tag key={index}>
         {method}
@@ -192,7 +201,7 @@ const Entry = ({ entry }: { entry: any }) => {
     )
   })
 
-  const listOfTags = entry.taste_tags.map((taste: string, index: number) => {
+  const listOfTags = entry?.getEntry.taste_tags.map((taste: string, index: number) => {
     return (
       <Tag key={index}>
         {taste}
@@ -200,37 +209,37 @@ const Entry = ({ entry }: { entry: any }) => {
     )
   })
 
-  if (error) router.push('/404')
-  if (loading) return <Loading />;
+  if (loadingError) router.push('/404')
+  if (!entry || loading) return <Loading />;
   else {
     return (
     <Layout>
       <Head>
-        <title>{entry.origin_name}</title>
+        <title>{entry?.getEntry.origin_name}</title>
       </Head>
       <Container>
         <TopDetails>
-          <p>{new Date(((new Date(Number(entry.created_on))).getTime())-((new Date(Number(entry.created_on)))).getTimezoneOffset() * 60000).toDateString()}</p>
-          <Rating>{entry.rating} / 5</Rating>
+          <p>{new Date(((new Date(Number(entry?.getEntry.created_on))).getTime())-((new Date(Number(entry?.getEntry.created_on)))).getTimezoneOffset() * 60000).toDateString()}</p>
+          <Rating>{entry?.getEntry.rating} / 5</Rating>
         </TopDetails>
         <hr/>
         <Header>
           { liked ? <HeartFilled onClick={(e: any) => handleLike(e)} style={{ fontSize: '2rem' }}/> 
           : <HeartOutlined onClick={(e: any) => handleLike(e)} style={{ fontSize: '2rem' }}/>}
-          <h1>{entry.origin_name}</h1>
+          <h1>{entry?.getEntry.origin_name}</h1>
         </Header>
         <hr/>
         <Details>
-          <p><DollarCircleFilled style={{ fontSize: '1rem' }}/>price: ${entry.price}</p>
-          <p><ShopOutlined style={{ fontSize: '1rem' }}/>producer: {entry.producer}</p>
-          <p><FireFilled style={{ fontSize: '1rem' }}/>roaster: {entry.roaster}</p>
-          <p><CalendarFilled style={{ fontSize: '1rem' }}/>roast date: {(new Date(Number(entry.roast_date))).toDateString()}</p>
-          <p><ExperimentOutlined style={{ fontSize: '1rem' }}/>process: {entry.process}</p>
-          <p><TableOutlined style={{ fontSize: '1rem' }}/>variety: {entry.variety}</p>
+          <p><DollarCircleFilled style={{ fontSize: '1rem' }}/>price: ${entry?.getEntry.price}</p>
+          <p><ShopOutlined style={{ fontSize: '1rem' }}/>producer: {entry?.getEntry.producer}</p>
+          <p><FireFilled style={{ fontSize: '1rem' }}/>roaster: {entry?.getEntry.roaster}</p>
+          <p><CalendarFilled style={{ fontSize: '1rem' }}/>roast date: {(new Date(Number(entry?.getEntry.roast_date))).toDateString()}</p>
+          <p><ExperimentOutlined style={{ fontSize: '1rem' }}/>process: {entry?.getEntry.process}</p>
+          <p><TableOutlined style={{ fontSize: '1rem' }}/>variety: {entry?.getEntry.variety}</p>
         </Details>
         <Notes>
           <h3><PaperClipOutlined style={{ fontSize: '1rem' }}/>notes:</h3>
-          <p>{entry.notes}</p>
+          <p>{entry?.getEntry.notes}</p>
         </Notes>
         <MethodsAndTags>
           <ArrContainer>
@@ -258,31 +267,6 @@ const Entry = ({ entry }: { entry: any }) => {
   )
   }
   
-}
-
-export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-
-  const apolloClient = initializeApollo()
-  const { id } = context.query
-  const variables = { id }
-
-  const res: any = await apolloClient.query({
-    query: GET_ENTRY,
-    variables
-  })
-    .catch(err => {
-      return {
-        notFound: true,
-      }
-    })
-
-  console.log(res)
-
-  return addApolloState(apolloClient, {
-    props: {
-      entry: res.data.getEntry,
-    }
-  });
 }
 
 export default Entry;

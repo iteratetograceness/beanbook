@@ -1,99 +1,22 @@
-import { useState, useReducer } from 'react'
+import { useState, useRef, useEffect, Suspense } from 'react'
 import { useRouter } from 'next/router'
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { beanSchema } from "../lib/yupSchemas";
 import Layout from '../components/layout';
 import styled from 'styled-components';
-import EntryPageOne from '../components/entry-page-one';
-import EntryPageTwo from '../components/entry-page-two';
-import EntryPageThree from '../components/entry-page-three';
-import { LeftCircleFilled, RightCircleFilled } from '@ant-design/icons';
-import Button from '../components/button';
 import { DefaultEntry, EmptyEntry } from '../lib/types/default-entry';
 import { v1 as uuid } from 'uuid';
 import { useSession } from "next-auth/react";
-import { useMutation } from '@apollo/client';
-import { ADD_ENTRY } from '../lib/queries';
-import Loading from '../components/loading';
+import dynamic from 'next/dynamic'
 
 const schema = beanSchema
 
+const DynamicChatForm = dynamic(() => import('../components/chatForm'), {
+  ssr: false
+})
+
 const Container = styled.div`
-  display: flex;
-  background-color: ${props => props.theme.colors.light};
-  min-height: 50vh;
-  width: 90%;
-  padding: 2rem 0;
-  border-radius: 1rem;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-
-  @media (max-width: 465px) {
-    flex-direction: column;
-
-    .first-col-container {
-      margin-bottom: 2rem;
-    }
-
-    .second-col {
-      margin: 1rem;
-    }
-  }
-
-  a {
-    background-color: #f5f5f5;
-  }
-
-  div {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .first-col-container {
-    flex-direction: row;
-    width: 100px;
-    flex-grow: 0;
-  }
-
-  .first-col {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    padding: 1rem;
-    align-self: flex-start;
-    color: ${props => props.theme.colors.light};
-    background-color: ${props => props.theme.colors.dark};
-    border-top-right-radius: 1rem;
-    border-bottom-right-radius: 1rem;
-
-    h1 {
-      font-size: 2rem;
-      margin: 0;
-    }
-
-    .new-keyword {
-      color: ${props => props.theme.colors.darkest};
-      font-size: 2.5rem;
-    }
-  }
-
-  .second-col {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    margin: 0 2rem;
-  }
-`
-
-const arrowStyles = {
-  color: '#7e705f',
-  fontSize: '3rem',
-  cursor: 'pointer',
-  width: '3rem',
-  margin: '.5rem',
-}
-
-const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row !important;
   align-items: center;
@@ -101,125 +24,186 @@ const ButtonContainer = styled.div`
   width: 100%;
   align-self: flex-end;
   margin-top: 1rem;
-
-  button {
-    &:hover {
-      background-color: ${props => props.theme.colors.darkest};
-      transform: scale(1.02);
-      cursor: pointer;
-      transition: all 0.2s ease-in-out;
-    }
-  }
-
-  span {
-    &:hover {
-      color: ${props => props.theme.colors.darkest} !important;
-      transform: scale(1.03);
-      transition: all 0.2s ease-in-out;
-    }
-  }
 `
+
+const isSSR = typeof window === 'undefined'
+
+
+const tasteTags = [ 'sweet', 'acidic', 'bitter', 'salty', 'spicy', 'berry', 'fruity', 'citrus', 'floral', 'chocolate', 'herbal', 'nutty', 'savory', 'caramel', 'smoky', 'clean' ]
+
+const brewMethods = [ 'cupping', 'drip', 'espresso', 'siphon', 'aeropress', 'chemex', 'pour over', 'french press' ]
+
+const additionalDetails = [ 'price', 'roaster', 'producer', 'roast_date', 'variety', 'process', 'brew_method', 'taste_tags' ]
+
+const generateCheckboxes = (tags: string[], name: string) => {
+  return tags.map(tag => {
+
+    if (tag.includes('_')) tag = tag.replace('_', ' ')
+
+    return {
+      'tag': 'input',
+      'type': 'checkbox',
+      'name': name,
+      'value': tag,
+      "cf-label": tag[0].toUpperCase() + tag.substring(1),
+    }
+  })
+}
+
+const fields = [
+  {
+    'tag': 'input',
+    'type': 'text',
+    'name': 'origin_name',
+    'cf-questions': 'Hi, looks like you\'re here to add a new entry. What is the name and origin of the beans?'
+  },
+  {
+    'tag': 'fieldset',
+    'cf-questions': 'Want to mark this as a favorite?',
+    'children': [
+      {
+        'tag': 'input',
+        'type': 'radio',
+        'name': 'favorited',
+        'value': 'true',
+        "cf-label": "Yes",
+        
+      },
+      {
+        'tag': 'input',
+        'type': 'radio',
+        'name': 'favorited',
+        'value': 'false',
+        "cf-label": "No",
+        
+      }
+    ]
+  },
+  {
+    'tag': 'fieldset',
+    'cf-questions': 'On a scale of 1 to 5, how would you rate these beans?',
+    'children': [
+      {
+        'tag': 'input',
+        'type': 'radio',
+        'name': 'rating',
+        'value': 1,
+        "cf-label": "⭐",
+      },
+      {
+        'tag': 'input',
+        'type': 'radio',
+        'name': 'rating',
+        'value': 2,
+        "cf-label": "⭐⭐",
+      },
+      {
+        'tag': 'input',
+        'type': 'radio',
+        'name': 'rating',
+        'value': 3,
+        "cf-label": "⭐⭐⭐",
+      },
+      {
+        'tag': 'input',
+        'type': 'radio',
+        'name': 'rating',
+        'value': 4,
+        "cf-label": "⭐⭐⭐⭐",
+      },
+      {
+        'tag': 'input',
+        'type': 'radio',
+        'name': 'rating',
+        'value': 5,
+        "cf-label": "⭐⭐⭐⭐⭐",
+      }
+    ]
+  },
+  {
+    'tag': 'fieldset',
+    'cf-questions': 'Which of the following additional details would you like to add to this entry?',
+    'children': generateCheckboxes(additionalDetails, 'additional')
+  },
+  {
+    'tag': 'input',
+    'type': 'text',
+    'name': 'price',
+    'cf-conditional-additional': 'price',
+    'cf-questions': 'How much did you pay for these beans?'
+  },
+  {
+    'tag': 'input',
+    'type': 'text',
+    'name': 'roaster',
+    'cf-conditional-additional': 'roaster',
+    'cf-questions': 'Who was the roaster?'
+  },
+  {
+    'tag': 'input',
+    'type': 'text',
+    'name': 'producer',
+    'cf-conditional-additional': 'producer',
+    'cf-questions': 'Who was the producer?'
+  },
+  {
+    'tag': 'input',
+    'type': 'text',
+    'name': 'roast_date',
+    'cf-conditional-additional': 'roast_date',
+    'cf-questions': 'When was the roast date?'
+  },
+  {
+    'tag': 'input',
+    'type': 'text',
+    'name': 'variety',
+    'cf-conditional-additional': 'variety',
+    'cf-questions': 'What is the variety of these beans?'
+  },
+  {
+    'tag': 'input',
+    'type': 'text',
+    'name': 'process',
+    'cf-conditional-additional': 'process',
+    'cf-questions': 'How were these beans processed?'
+  },
+  {
+    'tag': 'fieldset',
+    'name': 'brew_method',
+    'cf-conditional-additional': 'brew_method',
+    'cf-questions': 'How did you brew these beans?',
+    'children': generateCheckboxes(brewMethods, 'brew_method')
+    // TODO: add functionality to add custom brew methods
+  },
+  {
+    'tag': 'fieldset',
+    'name': 'taste_tags',
+    'cf-conditional-additional': 'taste_tags',
+    'cf-questions': 'How would you describe the taste of these beans?',
+    'children': generateCheckboxes(tasteTags, 'taste_tags')
+    // TODO: add functionality to add custom taste tags
+  }
+]
 
 function AddBeans() {
 
   const router = useRouter()
   const { data: session } = useSession()
-  const [ page, setPage ] = useState(1)
-  const [ stars, setStars ] = useState(1)
-  const [ brew_method, setBrewMethod ] = useState<string[]>([])
-  const [ taste_tags, setTasteTags ] = useState<string[]>([])
-  const [ entry, setEntry ] = useState<DefaultEntry>(EmptyEntry as DefaultEntry)
 
-  const [addEntryMutation, { loading, error }] = useMutation(ADD_ENTRY);
+  return (
+    <Layout>
+      { isSSR && <Container /> }
+      { !isSSR && (
+        <Suspense fallback={<div />}>
+          <DynamicChatForm fields={fields} variant='newEntry'/>
+        </Suspense>
+      ) }
+    </Layout>
+  )
 
-  const { register, getValues } = useForm({
-    resolver: yupResolver(schema)
-  });
+  
 
-  const addEntry = async (e: MouseEvent) => {
-    e.preventDefault()
-
-    let newEntry: DefaultEntry = entry
-    const values = getValues()
-    const user_id = session?.user.user_id
-
-    newEntry = {
-      ...newEntry,
-      ...values,
-      price: values.price ? Number(values.price) : null,
-      roast_date: values.roast_date ? new Date(values.roast_date) : null,
-      brew_method: brew_method,
-      taste_tags: taste_tags,
-      rating: Number(stars),
-      userid: user_id,
-      id: uuid().toString()
-    }
-
-    addEntryMutation({ variables: { entry: newEntry } })
-      .then(res => {
-        if (!res.data.addEntry.validation || error) {
-          // TODO: Custom error popup/toast
-          console.log('ERROR', res, error)
-          alert(error || res.data.addEntry.message)
-        } else {
-          router.push({
-            pathname: `/entry/${newEntry.origin_name}`,
-            query: { id: newEntry.id },
-          })
-        }
-      })
-      .catch(err => {
-        // TODO: Custom error popup/toast
-        alert(err.message)
-      })
-  }
-
-  const nextPage = () => {
-    setPage(prev => page + 1)
-  }
-
-  const prevPage = () => {
-    setPage(prev => page - 1)
-  }
-
-  if (loading) {
-    return <Loading/>
-  } else {
-      return (
-      <Layout>
-          <Container>
-            <div className="first-col-container">
-              <div className='first-col'>
-                <h1>+</h1>
-                <h1 className='new-keyword'>new</h1>
-                <h1>entry</h1>
-              </div>
-            </div>
-
-            <form className='second-col' id='entry-form'>
-              { page === 1 && <EntryPageOne register={register} /> }
-              { page === 2 && <EntryPageTwo stars={stars} setStars={setStars} register={register} /> }
-              { page === 3 && <EntryPageThree brew_method={brew_method} setBrewMethod={setBrewMethod} taste_tags={taste_tags} setTasteTags={setTasteTags} /> }
-              <ButtonContainer>
-                { page > 1 && page <= 3 && <LeftCircleFilled style={arrowStyles} onClick={prevPage} /> }
-                { page < 3 && <RightCircleFilled 
-                  style={arrowStyles} 
-                  onClick={nextPage} 
-                /> }
-                { page === 3 && <Button 
-                  inverse='false' 
-                  variant='primary' 
-                  form='entry-form'
-                  onClick={(e: any) => addEntry(e)}
-                >
-                  Submit
-                </Button> }
-              </ButtonContainer>
-            </form>
-          </Container>
-      </Layout>
-    )
-  }
+  
 }
 
 export default AddBeans

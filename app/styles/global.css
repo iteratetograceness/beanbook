@@ -123,3 +123,98 @@ a {
 *:active {
   outline-color: #ded9d1 !important;
 }
+
+#cf-context { 
+  width: 500px; 
+  height: 500px;
+}
+
+#form {
+  height: 0px;
+  overflow: hidden;
+}
+
+#conversational-form {
+  font-family: Inconsolata, sans-serif;
+  height: 60vh;
+  width: 87vw;
+  background: none;
+  border: 1px solid #ded9d1;
+  border-radius: 30px;
+  margin-top: 7rem;
+}
+
+#conversational-form::before {
+  background: none;
+}
+
+#cf-input-control-elements {
+  background-color: none;
+}
+
+.conversational-form-inner {
+  width: fit-content;
+}
+
+cf-input-control-elements {
+  background-color: none !important;
+}
+
+.cf-button {
+  border: none !important;
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: flex-end;
+}
+
+.inputWrapper input, textarea {
+  font-family: Inconsolata, sans-serif;
+  border-radius: 50px !important;
+  color: none;
+  margin: 2px 0;
+  max-width: calc(100% - 70px)
+}
+
+.inputWrapper input:focus {
+  box-shadow: none;
+}
+
+cf-list {
+  padding-top: 10px;
+}
+
+cf-input {
+  background: none !important;
+}
+
+cf-input-button.cf-input-button {
+  border-radius: 50% !important;
+  width: 60px !important;
+  height: 60px !important;
+  margin: 5px 0;
+}
+
+cf-chat-response.robot thumb {
+  background-image: url('https://i.ibb.co/k0fBkxM/USER-BEAN.png') !important;
+}
+
+cf-chat-response.user thumb {
+  background-image: url('https://i.ibb.co/7r7kLvx/MR-BEAN.png') !important;
+}
+
+cf-chat-response text>p {
+ background: #433f3c !important; 
+ color: #ded9d1 !important;
+}
+
+cf-chat-response.user text>p {
+  color: #433f3c !important; 
+  background: #ded9d1 !important;
+ }
+
+cf-list-button.cf-gradient:before {
+  background: #ded9d1 !important;
+  color: #433f3c !important;
+}

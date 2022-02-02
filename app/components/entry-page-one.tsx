@@ -39,8 +39,6 @@ const Label = styled.label`
 
 function EntryPageOne({ register, entry }: { register: Function, entry?: any }) {
 
-  console.log(entry)
-
   return (
     <Container>
       <p style={{ marginBottom: '.5em' }}> * required </p>

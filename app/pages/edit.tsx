@@ -139,8 +139,6 @@ function EditBeans() {
 
     const values = getValues();
 
-    console.log(values)
-
     let newEntry: DefaultEntry = {
       ...values,
       price: values.price ? Number(values.price) : null,
@@ -155,7 +153,6 @@ function EditBeans() {
     
     updateEntry({ variables: { entry: newEntry } })
       .then(res => {
-        console.log(res)
         if (!res.data.updateEntry.validation || error) {
           // TODO: Custom error popup/toast
           alert(error || res.data.updateEntry.message)

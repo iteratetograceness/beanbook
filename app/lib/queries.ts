@@ -29,7 +29,7 @@ mutation Mutation($entry: EntryInput) {
 }
 `;
 
-export const GET_ENTRY = gql`
+export const GET_ENTRY = `
   query GetEntry($id: ID!) {
     getEntry(id: $id) {
       id

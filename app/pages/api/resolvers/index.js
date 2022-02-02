@@ -73,7 +73,7 @@ export const resolvers =
           const userid = args.userid;
           const query = `SELECT * FROM entries WHERE userid = $1 ORDER BY created_on DESC LIMIT 8`;
           const entries = await pool.query(query, [userid]);
-          console.log(entries.rows)
+          //console.log(entries.rows)
           return entries.rows;
         } catch (error) {
           return error;
@@ -125,10 +125,11 @@ export const resolvers =
       },
       addEntry: async (root, args, context, info) => {
         const { entry } = args;
+        console.log(entry)
         try {
           const query = `INSERT INTO entries (id, userid, favorited, origin_name, price, roaster, producer, roast_date, variety, process, rating, notes, brew_method, taste_tags) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`;
           const res = await pool.query(query, [entry.id, entry.userid, entry.favorited, entry.origin_name, entry.price, entry.roaster, entry.producer, entry.roast_date, entry.variety, entry.process, entry.rating, entry.notes, entry.brew_method, entry.taste_tags]);
-          console.log(res)
+          //console.log(res)
 
           return {
             validation: true,
@@ -142,16 +143,12 @@ export const resolvers =
         }
       },
       updateEntry: async (root, args, context, info) => {
-
-        console.log(args)
  
         try {
 
           let query = 'UPDATE entries SET ';
 
           const { entry } = args;
-
-          console.log(entry)
 
           const length = Object.keys(entry).length - 1;
           let i = 1;
