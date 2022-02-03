@@ -27,9 +27,9 @@ const Main: NextPage = () => {
       </Head>
 
       <Container>
-        <Title>#maintenance</Title>
-        <h3>beanbook will be back soooon</h3>
-        {/* <AnimatedLetters title={['b', 'e', 'a', 'n', 'b', 'o', 'o', 'k']}/> */}
+        {/* <Title>#maintenance</Title>
+        <h3>beanbook will be back soooon</h3> */}
+        <AnimatedLetters title={['b', 'e', 'a', 'n', 'b', 'o', 'o', 'k']}/>
       </Container>
     </div>
   )
