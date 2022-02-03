@@ -5,7 +5,6 @@ import { gql } from 'graphql-request'
 import { v1 as uuid } from 'uuid'
 import { useSession } from 'next-auth/react'
 import router from 'next/router'
-import { StringSchema } from 'yup'
 
 const ADD_ENTRY = gql`
 mutation Mutation($entry: EntryInput) {

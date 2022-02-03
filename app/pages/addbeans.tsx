@@ -29,7 +29,7 @@ const tasteTags = [ 'floral', 'fruity', 'sour/fermented', 'green/vegetable', 'ro
 
 const brewMethods = [ 'cupping', 'drip', 'espresso', 'siphon', 'aeropress', 'chemex', 'pour over', 'french press' ]
 
-const additionalDetails = [ 'price', 'roaster', 'producer', 'roast_date', 'variety', 'process', 'brew_method', 'taste_tags' ]
+const additionalDetails = [ 'price', 'roaster', 'producer', 'roast_date', 'variety', 'process', 'brew_method', 'taste_tags', 'notes' ]
 
 const generateCheckboxes = (tags: string[], name: string) => {
   return tags.map(tag => {
@@ -123,7 +123,7 @@ const fields = [
   },
   {
     'tag': 'fieldset',
-    'cf-questions': 'Which of the following additional details would you like to add to this entry?',
+    'cf-questions': 'Which of the following additional details would you like to add to this entry? For things that don\'t fit into the other categories or if you want to add more personal details to the entry, make sure select Notes.',
     'children': generateCheckboxes(additionalDetails, 'additional')
   },
   {
@@ -189,7 +189,14 @@ const fields = [
     'name': 'other_taste_tags',
     'cf-conditional-additional': 'taste_tags|other',
     'cf-questions': 'Any other tasting notes you\'d like to specify? Please separate multiple phrases with commas.'
-  }
+  },
+  {
+    'tag': 'textarea',
+    'type': 'text',
+    'name': 'notes',
+    'cf-conditional-additional': 'notes',
+    'cf-questions': 'Any additional details? Add any notes you\'d like to add to this entry.'
+  },
 ]
 
 function AddBeans() {
