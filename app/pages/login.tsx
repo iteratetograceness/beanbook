@@ -31,7 +31,7 @@ const Login: NextPage = () => {
     return () => {
       router.events.off('routeChangeStart', handleRouteChange)
     }
-  }, [])
+  }, [loading, router.events])
 
   if (status === "authenticated") router.push('/home')
 

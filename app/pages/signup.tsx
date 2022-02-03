@@ -22,7 +22,7 @@ const Signup: NextPage = () => {
     return () => {
       router.events.off('routeChangeStart', handleRouteChange)
     }
-  }, [])
+  }, [loading, router.events])
 
   if (loading) return <Loading/>
 

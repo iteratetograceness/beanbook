@@ -174,33 +174,33 @@ function EditBeans() {
     setPage(prev => page - 1)
   }
 
-  useLayoutEffect(() => {
-    let old: any = router.query;
+  // useLayoutEffect(() => {
+  //   let old: any = router.query;
 
-    if (typeof old.brew_method === 'string') {
-      let brew_methods = []
-      brew_methods.push(entry.brew_method)
-      old.brew_method = brew_methods
-    } 
+  //   if (typeof old.brew_method === 'string') {
+  //     let brew_methods = []
+  //     brew_methods.push(entry.brew_method)
+  //     old.brew_method = brew_methods
+  //   } 
 
-    if (typeof old.taste_tags === 'string') {
-      let taste_tags = []
-      taste_tags.push(entry.taste_tags)
-      old.taste_tags = taste_tags
-    } 
+  //   if (typeof old.taste_tags === 'string') {
+  //     let taste_tags = []
+  //     taste_tags.push(entry.taste_tags)
+  //     old.taste_tags = taste_tags
+  //   } 
 
-    old = {
-      ...old,
-      roast_date: old.roast_date ? Number(old.roast_date) : null,
-      favorited: old.favorited === 'true' ? true : false,
-      price: old.price ? Number(old.price) : null,
-      rating: old.rating ? Number(old.rating) : null,
-    }
-    setEntry(old)
-    setStars(old.rating)
-    setBrewMethod(old.brew_method)
-    setTasteTags(old.taste_tags)
-  }, [router.query])
+  //   old = {
+  //     ...old,
+  //     roast_date: old.roast_date ? Number(old.roast_date) : null,
+  //     favorited: old.favorited === 'true' ? true : false,
+  //     price: old.price ? Number(old.price) : null,
+  //     rating: old.rating ? Number(old.rating) : null,
+  //   }
+  //   setEntry(old)
+  //   setStars(old.rating)
+  //   setBrewMethod(old.brew_method)
+  //   setTasteTags(old.taste_tags)
+  // }, [router.query])
 
   if (loading) {
     return <Loading/>
