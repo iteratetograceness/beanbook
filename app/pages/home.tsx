@@ -11,11 +11,12 @@ import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import Loading from "../components/loading";
 
-const Home = ({ userid }: { userid: string | undefined }) => {
+const Home = ({ userid, firstname }: { userid: string | undefined, firstname: string | undefined }) => {
 
   const router = useRouter();
   
   const { data: session } = useSession()
+  console.log(session)
 
   const { loading, error, data } = useQuery(GET_RECENT_ENTRIES, {
     variables: { userid }
@@ -52,23 +53,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   const userid = session?.user?.user_id
-  const variables = { userid }
-
-  const apolloClient = initializeApollo()
-
-  await apolloClient.query({
-    query: GET_RECENT_ENTRIES,
-    variables
-  })
-    .catch(err => {
-      return {
-        notFound: true,
-      }
-    })
 
   return {
     props: {
       userid: session?.user.user_id,
+      firstname: session?.user.firstname
     }
   };
 

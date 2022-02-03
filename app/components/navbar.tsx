@@ -6,7 +6,6 @@ import { useMediaQuery } from "react-responsive";
 import { bubble as Menu } from 'react-burger-menu';
 import { SettingFilled } from '@ant-design/icons';
 import { signOut } from "next-auth/react"
-import Loading from './loading';
 import { useRouter } from 'next/router';
 
 const Nav = styled.nav`
@@ -120,26 +119,10 @@ const NavBar: FunctionComponent = () => {
     router.push(data.url)
   }
 
-  const [ loading, setLoading ] = useState(false);
-
-  useEffect(() => {
-    const handleRouteChange = () => {
-      setLoading(!loading)
-    }
-
-    router.events.on('routeChangeStart', handleRouteChange)
-
-    return () => {
-      router.events.off('routeChangeStart', handleRouteChange)
-    }
-  }, [])
-
-  if (loading) return <Loading/>
-
   if (isMobile) 
     return (
         <Nav id="outer-container">
-          <Link href="/home"  >
+          <Link href="/home">
             <a className='logo' style={{ margin: '2rem 2rem' }}>beanbook</a>
           </Link>
           <Menu styles={styles} right>

@@ -193,21 +193,21 @@ const Entry = () => {
       .catch(err => console.log(err));
   }
 
-  const listOfMethods = entry?.getEntry.brew_method.map((method: string, index: number) => {
+  const listOfMethods = entry?.getEntry.brew_method[0].length ? entry?.getEntry.brew_method.map((method: string, index: number) => {
     return (
       <Tag key={index}>
         {method}
       </Tag>
     )
-  })
+  }) : null
 
-  const listOfTags = entry?.getEntry.taste_tags.map((taste: string, index: number) => {
+  const listOfTags = entry?.getEntry.taste_tags[0].length ? entry?.getEntry.taste_tags.map((taste: string, index: number) => {
     return (
       <Tag key={index}>
         {taste}
       </Tag>
     )
-  })
+  }) : null
 
   if (loadingError) router.push('/404')
   if (!entry || loading) return <Loading />;

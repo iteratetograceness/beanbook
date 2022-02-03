@@ -28,7 +28,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps }, router }: AppP
             animate="animate"
             variants={{
               initial: {
-                opacity: 0,
+                opacity: .8,
               },
               animate: {
                 opacity: 1,

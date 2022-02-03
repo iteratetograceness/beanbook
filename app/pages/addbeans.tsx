@@ -1,12 +1,8 @@
-import { useState, useRef, useEffect, Suspense } from 'react'
+import { Suspense } from 'react'
 import { useRouter } from 'next/router'
-import { useForm } from "react-hook-form";
-import { yupResolver } from '@hookform/resolvers/yup';
 import { beanSchema } from "../lib/yupSchemas";
 import Layout from '../components/layout';
 import styled from 'styled-components';
-import { DefaultEntry, EmptyEntry } from '../lib/types/default-entry';
-import { v1 as uuid } from 'uuid';
 import { useSession } from "next-auth/react";
 import dynamic from 'next/dynamic'
 
@@ -29,7 +25,7 @@ const Container = styled.div`
 const isSSR = typeof window === 'undefined'
 
 
-const tasteTags = [ 'sweet', 'acidic', 'bitter', 'salty', 'spicy', 'berry', 'fruity', 'citrus', 'floral', 'chocolate', 'herbal', 'nutty', 'savory', 'caramel', 'smoky', 'clean' ]
+const tasteTags = [ 'floral', 'fruity', 'sour/fermented', 'green/vegetable', 'roasted', 'spices', 'nutty/cocoa', 'sweet', 'other' ]
 
 const brewMethods = [ 'cupping', 'drip', 'espresso', 'siphon', 'aeropress', 'chemex', 'pour over', 'french press' ]
 
@@ -38,15 +34,20 @@ const additionalDetails = [ 'price', 'roaster', 'producer', 'roast_date', 'varie
 const generateCheckboxes = (tags: string[], name: string) => {
   return tags.map(tag => {
 
-    if (tag.includes('_')) tag = tag.replace('_', ' ')
+    let label = tag
+    if (tag.includes('_')) label = tag.replace('_', ' ')
 
-    return {
+    let child: {[key:string]:string} = {
       'tag': 'input',
       'type': 'checkbox',
-      'name': name,
-      'value': tag,
-      "cf-label": tag[0].toUpperCase() + tag.substring(1),
+      'name': name, 
+      'value': tag, 
+      'cf-label': label[0].toUpperCase() + label.substring(1)
     }
+
+    if (name === 'brew_method' || name === 'taste_tags') child['cf-conditional-additional'] = name
+
+    return child
   })
 }
 
@@ -55,7 +56,7 @@ const fields = [
     'tag': 'input',
     'type': 'text',
     'name': 'origin_name',
-    'cf-questions': 'Hi, looks like you\'re here to add a new entry. What is the name and origin of the beans?'
+    'cf-questions': 'Hi, looks like you\'re here to add a new entry. What is the name and origin of the beans?',
   },
   {
     'tag': 'fieldset',
@@ -181,7 +182,13 @@ const fields = [
     'cf-conditional-additional': 'taste_tags',
     'cf-questions': 'How would you describe the taste of these beans?',
     'children': generateCheckboxes(tasteTags, 'taste_tags')
-    // TODO: add functionality to add custom taste tags
+  },
+  {
+    'tag': 'input',
+    'type': 'text',
+    'name': 'other_taste_tags',
+    'cf-conditional-additional': 'taste_tags|other',
+    'cf-questions': 'Any other tasting notes you\'d like to specify? Please separate multiple phrases with commas.'
   }
 ]
 

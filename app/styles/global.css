@@ -136,7 +136,8 @@ a {
 
 #conversational-form {
   font-family: Inconsolata, sans-serif;
-  height: 60vh;
+  min-height: 60vh;
+  max-height: 70vh;
   width: 87vw;
   background: none;
   border: 1px solid #ded9d1;
@@ -158,6 +159,9 @@ a {
 
 cf-input-control-elements {
   background-color: none !important;
+  height: fit-content;
+  width: 100% !important;
+  overflow-y: scroll;
 }
 
 .cf-button {
@@ -180,9 +184,23 @@ cf-input-control-elements {
 .inputWrapper input:focus {
   box-shadow: none;
 }
-
 cf-list {
+  display: flex !important;
+  flex-flow: row wrap !important;
+  overflow-y: scroll !important;
+  width: 100% !important;
+  width: 100%;
   padding-top: 10px;
+  height: fit-content !important;
+}
+
+cf-button, cf-checkbox-button, cf-radio-button {
+  width: fit-content !important;
+  height: fit-content !important;
+}
+
+cf-button, cf-checkbox-button, cf-radio-button>div {
+  display: inline-flex;
 }
 
 cf-input {
@@ -215,6 +233,9 @@ cf-chat-response.user text>p {
  }
 
 cf-list-button.cf-gradient:before {
-  background: #ded9d1 !important;
-  color: #433f3c !important;
+  display: none;
+}
+
+cf-list-button.cf-gradient:after {
+  display: none;
 }
