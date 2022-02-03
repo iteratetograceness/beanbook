@@ -215,12 +215,13 @@ function EditBeans() {
                 <h1>entry</h1>
               </div>
             </div>
-
+            
             <form className='second-col' id='entry-form'>
-              { page === 1 && <EntryPageOne register={register} entry={entry}/> }
+              <h1>Currently under maintenance! Thank you for your patience.</h1>
+              {/* { page === 1 && <EntryPageOne register={register} entry={entry}/> }
               { page === 2 && <EntryPageTwo stars={stars} setStars={setStars} register={register} entry={entry}/> }
-              { page === 3 && <EntryPageThree brew_method={brew_method} setBrewMethod={setBrewMethod} taste_tags={taste_tags} setTasteTags={setTasteTags} entry={entry} /> }
-              <ButtonContainer>
+              { page === 3 && <EntryPageThree brew_method={brew_method} setBrewMethod={setBrewMethod} taste_tags={taste_tags} setTasteTags={setTasteTags} entry={entry} /> } */}
+              {/* <ButtonContainer>
                 { page > 1 && page <= 3 && <LeftCircleFilled style={arrowStyles} onClick={prevPage} /> }
                 { page < 3 && <RightCircleFilled 
                   style={arrowStyles} 
@@ -234,7 +235,7 @@ function EditBeans() {
                 >
                   Submit
                 </Button> }
-              </ButtonContainer>
+              </ButtonContainer> */}
             </form>
           </Container>
       </Layout>
