@@ -1,6 +1,6 @@
 import { GraphQLClient } from 'graphql-request'
 
-export const useGQLClient = async (query: any, variables: {[key:string]:any}) => { 
+export const GQLClient = async (query: any, variables: {[key:string]:any}) => { 
 
   const client = new GraphQLClient('/api/graphql')
   const headers = {

@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react'
 import { ConversationalForm } from 'conversational-form'
-import { useGQLClient } from '../lib/graphqlClient'
+import { GQLClient } from '../lib/graphqlClient'
 import { gql } from 'graphql-request'
 import { v1 as uuid } from 'uuid'
 import { useSession } from 'next-auth/react'
@@ -70,7 +70,7 @@ const ChatForm = ({ fields, variant }: { fields: object[], variant: string }) =>
       if (entry.additional) delete entry.additional
       console.log("Formdata, obj:", entry);
 
-      const res = useGQLClient(ADD_ENTRY, { entry });
+      const res = GQLClient(ADD_ENTRY, { entry });
       console.log(res)
       chat.addRobotChatResponse('Alright, your entry has been saved! I\'ll redirect you to the entry page in a moment.')
       setTimeout(() => goToEntry(entry.origin_name, entry.id), 3000)

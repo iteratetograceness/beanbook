@@ -102,7 +102,7 @@ const AnimatedLetters = ({ title }: AnimatedLettersProps) => {
     return () => {
       router.events.off('routeChangeStart', handleRouteChange)
     }
-  }, [])
+  }, [router.events, loading])
 
   useEffect(() => {
     router.prefetch('/home')
