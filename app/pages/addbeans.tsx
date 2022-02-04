@@ -201,9 +201,6 @@ const fields = [
 
 function AddBeans() {
 
-  const router = useRouter()
-  const { data: session } = useSession()
-
   return (
     <Layout>
       { isSSR && <Container /> }

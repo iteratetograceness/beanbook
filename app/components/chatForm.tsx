@@ -62,8 +62,10 @@ const ChatForm = ({ fields, variant }: { fields: object[], variant: string }) =>
       const data = chat.getFormData(true)
       const favorited = data.favorited === 'true'
       const rating = Number(data.rating[0])
-      if (data.other_taste_tags) data.taste_tags = data.taste_tags.concat(data.other_taste_tags.split(',')) 
-      else data.taste_tags = []
+      if (data.other_taste_tags) {
+        data.taste_tags = data.taste_tags.filter((tag:string) => tag !== 'other')
+        data.taste_tags = data.taste_tags.concat(data.other_taste_tags.split(',')) 
+      } else data.taste_tags = []
       const entry = { ...data, id: uuid().toString(), userid, favorited, rating, taste_tags: data.taste_tags, price: Number(data.price) }
       if (entry.other_taste_tags) delete entry.other_taste_tags
       if (entry.additional) delete entry.additional

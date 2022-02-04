@@ -233,7 +233,7 @@ const Entry = () => {
           <p><DollarCircleFilled style={{ fontSize: '1rem' }}/>price: ${entry?.getEntry.price}</p>
           <p><ShopOutlined style={{ fontSize: '1rem' }}/>producer: {entry?.getEntry.producer}</p>
           <p><FireFilled style={{ fontSize: '1rem' }}/>roaster: {entry?.getEntry.roaster}</p>
-          <p><CalendarFilled style={{ fontSize: '1rem' }}/>roast date: {(new Date(Number(entry?.getEntry.roast_date))).toDateString()}</p>
+          <p><CalendarFilled style={{ fontSize: '1rem' }}/>roast date: {entry?.getEntry.roast_date ? (new Date(Number(entry?.getEntry.roast_date))).toDateString() : ''}</p>
           <p><ExperimentOutlined style={{ fontSize: '1rem' }}/>process: {entry?.getEntry.process}</p>
           <p><TableOutlined style={{ fontSize: '1rem' }}/>variety: {entry?.getEntry.variety}</p>
         </Details>
