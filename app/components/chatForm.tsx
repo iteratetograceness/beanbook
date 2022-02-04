@@ -28,7 +28,7 @@ const ChatForm = ({ fields, variant }: { fields: object[], variant: string }) =>
         submitCallback: variant === 'newEntry' ? addNewEntry : editEntry,
         preventAutoFocus: true,
         flowStepCallback: (dto: any, success: () => void, error: (msg: string) => void) => {
-          console.log(dto.tag.name, dto.text)
+          //(dto.tag.name, dto.text)
           if ((dto.tag.name === 'origin_name' || dto.tag.name === 'favorited') && !dto.text) return error('Required field!')
           if (dto.tag.name === 'price' && !Number.isInteger(Number(dto.text))) return error('Must be a number!')
           return success()
@@ -69,12 +69,12 @@ const ChatForm = ({ fields, variant }: { fields: object[], variant: string }) =>
       const entry = { ...data, id: uuid().toString(), userid, favorited, rating, taste_tags: data.taste_tags, price: Number(data.price) }
       if (entry.other_taste_tags) delete entry.other_taste_tags
       if (entry.additional) delete entry.additional
-      console.log("Formdata, obj:", entry);
+      // console.log("Formdata, obj:", entry);
   
       const res = GQLClient(ADD_ENTRY, { entry });
       console.log(res)
       chat.addRobotChatResponse('Alright, your entry has been saved! I\'ll redirect you to the entry page in a moment.')
-      setTimeout(() => goToEntry(entry.origin_name, entry.id), 3000)
+      setTimeout(() => goToEntry(entry.origin_name, entry.id), 2500)
   };
 
   const editEntry = () => {}

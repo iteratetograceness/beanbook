@@ -16,7 +16,7 @@ const Home = ({ userid, firstname }: { userid: string | undefined, firstname: st
   const router = useRouter();
   
   const { data: session } = useSession()
-  console.log(session)
+  // console.log(session)
 
   const { loading, error, data } = useQuery(GET_RECENT_ENTRIES, {
     variables: { userid }

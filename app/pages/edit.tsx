@@ -146,7 +146,7 @@ function EditBeans() {
       id: entry.id
     }
 
-    console.log(newEntry)
+    // console.log(newEntry)
     
     updateEntry({ variables: { entry: newEntry } })
       .then(res => {
