@@ -201,7 +201,7 @@ const Entry = () => {
     )
   }) : null
 
-  const listOfTags = entry?.getEntry.taste_tags[0].length ? entry?.getEntry.taste_tags.map((taste: string, index: number) => {
+  const listOfTags = entry?.getEntry.taste_tags.length ? entry?.getEntry.taste_tags.map((taste: string, index: number) => {
     return (
       <Tag key={index}>
         {taste}
