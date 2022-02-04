@@ -14,27 +14,6 @@ const FixedAuthLayout = styled(AuthLayout)`
 
 const Login: NextPage = () => {
 
-  const router = useRouter()
-  const { status } = useSession()
-
-  // const [ loading, setLoading ] = useState(false);
-
-  // useEffect(() => {
-  //   const handleRouteChange = () => {
-  //     setLoading(!loading)
-  //   }
-
-  //   router.events.on('routeChangeStart', handleRouteChange)
-
-  //   return () => {
-  //     router.events.off('routeChangeStart', handleRouteChange)
-  //   }
-  // }, [loading, router.events])
-
-  // if (status === "authenticated") router.push('/home')
-
-  // if (loading) return <Loading/>
-
   return (
     <FixedAuthLayout>
       <Head>

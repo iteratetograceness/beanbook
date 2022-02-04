@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useState } from "react";
 import { useRouter } from 'next/router';
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -58,12 +58,15 @@ const Label = styled.label`
 `;
 
 const SignUpForm: FunctionComponent = () => {
+
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema)
   });
 
   const handleRegister = async (data: any) => {
+    setLoading(true);
     const res = await signUp(data);
     if (res === 'success') {
       router.push('/login');
@@ -111,6 +114,7 @@ const SignUpForm: FunctionComponent = () => {
         {...register('confirmPassword')}
       />
       <p>{ errors.confirmPassword?.message }</p>
+      <p>{ loading ? 'Loading...' : '' }</p>
       <div className='button-container'>
         {/* login button */}
         <Button 
