@@ -193,7 +193,7 @@ const Entry = () => {
       .catch(err => console.log(err));
   }
 
-  const listOfMethods = entry?.getEntry.brew_method[0].length ? entry?.getEntry.brew_method.map((method: string, index: number) => {
+  const listOfMethods = entry?.getEntry.brew_method.length ? entry?.getEntry.brew_method.map((method: string, index: number) => {
     return (
       <Tag key={index}>
         {method}
