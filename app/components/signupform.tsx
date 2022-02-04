@@ -67,6 +67,10 @@ const SignUpForm: FunctionComponent = () => {
 
   const handleRegister = async (data: any) => {
     setLoading(true);
+    data = {
+      ...data,
+      username: data.username.toLowerCase()
+    }
     const res = await signUp(data);
     if (res === 'success') {
       router.push('/login');
