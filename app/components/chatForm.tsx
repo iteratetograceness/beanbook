@@ -70,7 +70,7 @@ const ChatForm = ({ fields, variant }: { fields: object[], variant: string }) =>
       if (entry.other_taste_tags) delete entry.other_taste_tags
       if (entry.additional) delete entry.additional
       console.log("Formdata, obj:", entry);
-
+  
       const res = GQLClient(ADD_ENTRY, { entry });
       console.log(res)
       chat.addRobotChatResponse('Alright, your entry has been saved! I\'ll redirect you to the entry page in a moment.')
