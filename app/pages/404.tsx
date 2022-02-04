@@ -26,8 +26,8 @@ function Custom404() {
       <AlertFilled style={{ fontSize: '50px', color: '#9c483a' }}/>
       <h1>404 - Page Not Found</h1>
       <Button inverse='true' variant='secondary' onClick={() => {
-        if (session) window.location.href = '/home';
-        else window.location.href = '/';
+        if (session.status === 'authenticated') window.location.href = '/home'
+        else window.location.href = '/login';
       }}>go back</Button>
     </Container>
   )

@@ -60,7 +60,7 @@ const Label = styled.label`
 
 const LoginForm: FunctionComponent = () => {
 
-  const [ loading, setLoading ] = useState<boolean>(false)
+  const [ message, setMessage ] = useState<string>('')
 
   const router = useRouter();
   const { register, handleSubmit, formState: { errors } } = useForm({
@@ -68,12 +68,13 @@ const LoginForm: FunctionComponent = () => {
   });
   
   const handleLogin = async (data: any) => {
-    setLoading(true)
+    setMessage('Loading...')
     const res: LoginResponseObject | undefined = await signIn('credentials', { redirect: false, password: data.password, username: data.username })
     
     if (res) {
-      if (res['ok']) router.push('/home')
-      else alert(res['error'] || 'Login failed. Please try again.')
+      console.log(res)
+      if (res['error']) setMessage(res['error'] || 'Login failed. Please try again.')
+      else router.push('/home')
     } 
   };
 
@@ -91,7 +92,7 @@ const LoginForm: FunctionComponent = () => {
         {...register('password')}
       />
       <p>{ errors.password?.message }</p>
-      <p>{ loading ? 'Loading...' : '' }</p>
+      <p>{ message }</p>
       <div className='button-container'>
         {/* login button */}
         <Button 
