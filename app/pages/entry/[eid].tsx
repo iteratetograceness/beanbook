@@ -194,6 +194,7 @@ const Entry = () => {
   }
 
   const listOfMethods = entry?.getEntry.brew_method.length ? entry?.getEntry.brew_method.map((method: string, index: number) => {
+    if (!method) return
     return (
       <Tag key={index}>
         {method}
@@ -202,6 +203,7 @@ const Entry = () => {
   }) : null
 
   const listOfTags = entry?.getEntry.taste_tags.length ? entry?.getEntry.taste_tags.map((taste: string, index: number) => {
+    if (!taste) return
     return (
       <Tag key={index}>
         {taste}
