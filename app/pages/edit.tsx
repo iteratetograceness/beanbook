@@ -1,4 +1,4 @@
-import { Suspense, useEffect } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import Layout from '../components/layout'
 import styled from 'styled-components'
 import dynamic from 'next/dynamic'
@@ -25,12 +25,14 @@ function EditBeans() {
 
   const router = useRouter()
   const { name } = router.query
+  const [ methods, setMethods ] = useState('none')
+  const [ tags, setTags ] = useState('none')
 
-  const tasteTags = [ 'floral', 'fruity', 'sour/fermented', 'green/vegetable', 'roasted', 'spices', 'nutty/cocoa', 'sweet', 'other' ]
+  let tasteTags = [ 'floral', 'fruity', 'sour/fermented', 'green/vegetable', 'roasted', 'spices', 'nutty/cocoa', 'sweet', 'other' ]
 
   const brewMethods = [ 'cupping', 'drip', 'espresso', 'siphon', 'aeropress', 'chemex', 'pour over', 'french press' ]
 
-  const keys = [ 'origin_name', 'price', 'roaster', 'producer', 'roast_date', 'variety', 'process', 'brew_method', 'taste_tags', 'notes' ]
+  const keys = [ 'origin_name', 'price', 'roaster', 'producer', 'roast_date', 'variety', 'process', 'brew_method', 'taste_tags' ]
 
   const generateCheckboxes = (tags: string[], name: string) => {
     return tags.map(tag => {
@@ -47,7 +49,7 @@ function EditBeans() {
         'cf-label': label[0].toUpperCase() + label.substring(1)
       }
 
-      if (name === 'brew_method' || name === 'taste_tags') child['cf-conditional-additional'] = name
+      if (name === 'brew_method' || name === 'taste_tags') child['cf-conditional-edit'] = name
 
       return child
     })
@@ -57,7 +59,19 @@ function EditBeans() {
 
   useEffect(() => {
     entry = sessionStorage.getItem('entry') ? JSON.parse(sessionStorage.getItem('entry') as string) : null
+
+    let brews = entry.brew_method || []
+    let tastes = entry.taste_tags || []
+
+    if (brews.length) setMethods(() => brews.join(','));
+
+    if (tastes.length && entry.taste_tags) {
+      setTags(() => tastes.join(','));
+      tasteTags = [...tasteTags, ...entry.taste_tags]
+    }
+    
     if (!entry) router.push('/home')
+
   }, [])
 
   let fields = [
@@ -120,31 +134,24 @@ function EditBeans() {
       'tag': 'fieldset',
       'name': 'brew_method',
       'cf-conditional-edit': 'brew_method',
-      'cf-questions': `Previously, you noted that you brewed these beans with the following: ${ entry.brew_method?.split(', ') || 'none'}.How did you brew these beans?`,
+      'cf-questions': `Previously, you noted that you brewed these beans with the following: ${methods}. Please choose the brew method(s) you have used, including the previous one(s) you'd like to keep listed.`,
       'children': generateCheckboxes(brewMethods, 'brew_method')
       // TODO: add functionality to add custom brew methods
     },
     {
       'tag': 'fieldset',
       'name': 'taste_tags',
-      'cf-conditional-additional': 'taste_tags',
-      'cf-questions': 'How would you describe the taste of these beans?',
+      'cf-conditional-edit': 'taste_tags',
+      'cf-questions': `You previously noted tagged these beans with the following tasting notes: ${tags}. Which of the following tasting notes would you like to keep and/or add to this entry?`,
       'children': generateCheckboxes(tasteTags, 'taste_tags')
     },
     {
       'tag': 'input',
       'type': 'text',
       'name': 'other_taste_tags',
-      'cf-conditional-additional': 'taste_tags|other',
+      'cf-conditional-edit': 'taste_tags|other',
       'cf-questions': 'Any other tasting notes you\'d like to specify? Please separate multiple phrases with commas.'
-    },
-    {
-      'tag': 'textarea',
-      'type': 'text',
-      'name': 'notes',
-      'cf-conditional-additional': 'notes',
-      'cf-questions': 'Any additional details? Add any notes you\'d like to add to this entry.'
-    },
+    }
   ]
 
   return (
@@ -152,7 +159,7 @@ function EditBeans() {
       { isSSR && <Container /> }
       { !isSSR && (
         <Suspense fallback={<div />}>
-          <DynamicChatForm fields={fields} variant='editEntry'/>
+          <DynamicChatForm fields={fields} variant='editEntry' />
         </Suspense>
       ) }
     </Layout>

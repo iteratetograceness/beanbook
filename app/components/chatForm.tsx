@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react'
 import { ConversationalForm } from 'conversational-form'
 import { GQLClient } from '../lib/graphqlClient'
-import { ADD_ENTRY } from '../lib/queries'
+import { ADD_ENTRY, UPDATE_ENTRY } from '../lib/queries'
 import { v1 as uuid } from 'uuid'
 import { useSession } from 'next-auth/react'
 import router from 'next/router'
@@ -64,15 +64,26 @@ const ChatForm = ({ fields, variant }: { fields: object[], variant: string }) =>
       // console.log("Formdata, obj:", entry);
   
       const res = GQLClient(ADD_ENTRY, { entry });
-      console.log(res)
       chat.addRobotChatResponse('Alright, your entry has been saved! I\'ll redirect you to the entry page in a moment.')
       setTimeout(() => goToEntry(entry.origin_name, entry.id), 2500)
   };
 
   const editEntry = () => {
-    const userid = session?.user.user_id
-    //const data = chat.getFormData(true)
-    //console.log(userid, data)
+    const data = chat.getFormData(true)
+    delete data.edit
+    let taste_tags = data.taste_tags ? data.taste_tags : null
+    let brew_method = data.brew_method ? data.brew_method : null
+    if (data.other_taste_tags) {
+      taste_tags = taste_tags.filter((tag:string) => tag !== 'other')
+      data.taste_tags = taste_tags.concat(data.other_taste_tags.split(',')) 
+      delete data.other_taste_tags
+    }
+    if (data.price) data.price = Number(data.price)
+    const entry = sessionStorage.getItem('entry') ? JSON.parse(sessionStorage.getItem('entry') as string) : null
+    data.id = entry.id
+    const res = GQLClient(UPDATE_ENTRY, { entry: data });
+    chat.addRobotChatResponse('Alright, your entry has been saved! I\'ll redirect you to the entry page in a moment.')
+    setTimeout(() => goToEntry(entry.origin_name, entry.id), 2500)
   }
 
   return (

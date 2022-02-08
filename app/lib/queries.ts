@@ -22,7 +22,6 @@ export const SIGNUP = gql`
 export const ADD_ENTRY = gql`
 mutation Mutation($entry: EntryInput) {
   addEntry(entry: $entry) {
-    id
     validation
     message
   }
