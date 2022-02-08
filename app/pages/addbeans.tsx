@@ -3,10 +3,7 @@ import { useRouter } from 'next/router'
 import { beanSchema } from "../lib/yupSchemas";
 import Layout from '../components/layout';
 import styled from 'styled-components';
-import { useSession } from "next-auth/react";
 import dynamic from 'next/dynamic'
-
-const schema = beanSchema
 
 const DynamicChatForm = dynamic(() => import('../components/chatForm'), {
   ssr: false
@@ -23,7 +20,6 @@ const Container = styled.div`
 `
 
 const isSSR = typeof window === 'undefined'
-
 
 const tasteTags = [ 'floral', 'fruity', 'sour/fermented', 'green/vegetable', 'roasted', 'spices', 'nutty/cocoa', 'sweet', 'other' ]
 
@@ -211,9 +207,6 @@ function AddBeans() {
       ) }
     </Layout>
   )
-
-  
-
   
 }
 

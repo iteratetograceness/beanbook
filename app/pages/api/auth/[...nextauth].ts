@@ -1,8 +1,8 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { LOGIN } from "../../../lib/queries"
-import { initializeApollo } from "../../../lib/client"
 import type { JWT } from "next-auth/jwt"
+import { GQLClient } from '../../../lib/graphqlClient'
 
 export default NextAuth({
   useSecureCookies: process.env.NODE_ENV === "production",
@@ -30,18 +30,23 @@ export default NextAuth({
       async authorize(credentials: Record<"username" | "password", string> | undefined | any, req) {
         
         const { username, password } = credentials
-        const apolloClient = initializeApollo()
+        console.log(credentials)
+        // const apolloClient = initializeApollo()
 
-        const res = await apolloClient.mutate({
-          mutation: LOGIN,
-          variables: { username, password }
-        })
+        // const res = await apolloClient.mutate({
+        //   mutation: LOGIN,
+        //   variables: { username, password }
+        // })
 
-        if (res?.data?.login?.authorized) {
+        const res = await GQLClient(LOGIN, { username, password })
+
+        console.log(res)
+
+        if (res?.login?.authorized) {
           return {
             data: {
-              user_id: res.data.login.user_id,
-              firstname: res.data.login.firstname,
+              user_id: res.login.user_id,
+              firstname: res.login.firstname,
             },
             status: 'success'
           }

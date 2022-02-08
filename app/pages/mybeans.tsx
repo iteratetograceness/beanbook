@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import Loading from "../components/loading";
 import { useState, useEffect } from "react";
 import { CoffeeCardType } from "../lib/types/entries";
+import { GQLClient } from "../lib/graphqlClient";
 
 const Container = styled.div`
   display: flex;
@@ -27,29 +28,9 @@ const Panel = styled.div`
   border-radius: 0 1rem 1rem 1rem;
 `;
 
-const MyBeans = ({ user_id }: { user_id: any }) => {
+const MyBeans = ({ user_id, entries }: { user_id: any, entries: CoffeeCardType[] }) => {
 
-  const router = useRouter();
-
-  const { loading, error, data } = useQuery(GET_ENTRIES, {
-    variables: { userid: user_id },
-  });
-  
-  const [ entries, setEntries ] = useState<CoffeeCardType[]>([]);
-
-  useEffect(() => {
-    if(loading === false && data){
-      const unorderedEntries: CoffeeCardType[] = [...data.getEntries];
-      const sortedEntries: CoffeeCardType[] = unorderedEntries.sort((a: CoffeeCardType, b: CoffeeCardType) => Number(b.created_on) - Number(a.created_on));
-      setEntries(sortedEntries);
-    }
-  }, [loading, data])
-
-  if (error) router.push('/404')
-
-  if (loading) return <Loading />;
-  else {
-    return (
+  return (
     <Layout>
       <Container>
         <SearchBar/>
@@ -64,6 +45,7 @@ const MyBeans = ({ user_id }: { user_id: any }) => {
               <Grid type='all' entries={entries} />
             </Panel>
           </TabPanel>
+
           <TabPanel>
             <Panel>
               <Grid type='fav' entries={entries} />
@@ -71,33 +53,33 @@ const MyBeans = ({ user_id }: { user_id: any }) => {
           </TabPanel>
         </Tabs>
       </Container>
-      
     </Layout>
-    )
-  }
-  
+  )
 }
 
 export async function getServerSideProps (context: GetServerSidePropsContext) {
+
+  context.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=1800, stale-while-revalidate=5'
+  )
+
   const session = await getSession({ req: context.req })
+
+  if (!session) {
+    return {
+      notFound: true,
+    }
+  }
+
   const userid = session?.user?.user_id
-  const variables = { userid }
 
-  const apolloClient = initializeApollo()
-
-  await apolloClient.query({
-    query: GET_ENTRIES,
-    variables
-  })
-    .catch(err => {
-      return {
-        notFound: true,
-      }
-    })
+  const { getEntries } = await GQLClient(GET_ENTRIES, { userid })
 
   return {
     props: {
       user_id: session?.user.user_id,
+      entries: getEntries
     }
   };
 }

@@ -2,8 +2,8 @@ import styled from "styled-components"
 import { HeartFilled, HeartOutlined, RightCircleFilled, StarOutlined, StarFilled } from "@ant-design/icons";
 import { MouseEvent, useState } from "react";
 import { useRouter } from "next/router";
-import { useMutation } from "@apollo/client";
 import { UPDATE_ENTRY } from "../lib/queries";
+import { GQLClient } from "../lib/graphqlClient";
 
 const Container = styled.div`
   display: grid;
@@ -61,29 +61,29 @@ function CoffeeCard({ origin_name, rating, id, favorited }: CoffeeCardProps) {
   const [stars, setStars] = useState(rating)
   const router = useRouter();
 
-  const [updateEntry] = useMutation(UPDATE_ENTRY);
+  //const [updateEntry] = useMutation(UPDATE_ENTRY);
 
   const handleRating = async (e: MouseEvent) => {
     e.preventDefault()
     const star_num = e.currentTarget.attributes['name' as any].value
-    setStars((prev) => Number(star_num) + 1)
+    setStars(prev => Number(star_num) + 1)
     const entry = {
       id,
       rating: Number(star_num) + 1,
     }
-    updateEntry({ variables: { entry } })
-    window.location.reload();
+    const res = await GQLClient(UPDATE_ENTRY, { entry })
+    // TODO: error handling via toast notifications on failure
   }
 
   const handleLike = async (e: MouseEvent) => {
       e.preventDefault();
-      setLiked(!liked);
+      setLiked(prev => !liked);
       const entry = {
         id,
         favorited: !liked
       }
-      updateEntry({ variables: { entry } })
-      window.location.reload();
+      const res = await GQLClient(UPDATE_ENTRY, { entry })
+      // TODO: error handling via toast notifications on failure
   }
 
   const starArr = new Array(5).fill(0).map((_, index) => {

@@ -72,7 +72,6 @@ const LoginForm: FunctionComponent = () => {
     const res: LoginResponseObject | undefined = await signIn('credentials', { redirect: false, password: data.password, username: data.username.toLowerCase() })
     
     if (res) {
-      // console.log(res)
       if (res['error']) setMessage(res['error'] || 'Login failed. Please try again.')
       else router.push('/home')
     } 

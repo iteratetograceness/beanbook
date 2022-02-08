@@ -29,7 +29,7 @@ export const resolvers =
       getEntries: async (root, args, context, info) => {
         try {
           const userid = args.userid;
-          const query = `SELECT * FROM entries WHERE userid = $1`;
+          const query = `SELECT * FROM entries WHERE userid = $1 ORDER BY created_on DESC`;
           const entries = await pool.query(query, [userid]);
           return entries.rows;
         } catch (error) {

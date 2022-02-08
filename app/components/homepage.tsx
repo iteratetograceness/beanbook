@@ -4,6 +4,7 @@ import SearchBar from './search';
 import { CoffeeCardType } from '../lib/types/entries';
 import { SmileOutlined, CalendarOutlined } from '@ant-design/icons';
 import CoffeeCard from './coffeecard';
+import Loading from './loading';
 
 const Container = styled.div`
   display: flex;
@@ -38,7 +39,7 @@ const SearchContainer = styled.div`
 
 function HomePage({ name, entries }: { name: string, entries: CoffeeCardType[] }) {
 
-  const recentCards = entries.map((entry: CoffeeCardType, i) => {
+  const recentCards = entries ? entries.map((entry: CoffeeCardType, i) => {
     return (
       <CoffeeCard
         origin_name={entry.origin_name}
@@ -48,7 +49,7 @@ function HomePage({ name, entries }: { name: string, entries: CoffeeCardType[] }
         key={entry.id}
       />
     )
-  });
+  }) : <Loading/>;
 
   return (
     <Container>
@@ -65,4 +66,4 @@ function HomePage({ name, entries }: { name: string, entries: CoffeeCardType[] }
   
 }
 
-export default HomePage
+export default HomePage 

@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from 'graphql-request'
 
 export const LOGIN = gql`
 mutation Login($username: String!, $password: String!) {
@@ -29,7 +29,7 @@ mutation Mutation($entry: EntryInput) {
 }
 `;
 
-export const GET_ENTRY = `
+export const GET_ENTRY = gql`
   query GetEntry($id: ID!) {
     getEntry(id: $id) {
       id
@@ -66,7 +66,7 @@ export const UPDATE_ENTRY = gql`
   mutation UpdateEntry($entry: UpdateEntryInput) {
     updateEntry(entry: $entry) {
       validation
-      id
+      message
     }
   }
 `;

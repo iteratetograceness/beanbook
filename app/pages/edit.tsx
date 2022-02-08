@@ -145,8 +145,6 @@ function EditBeans() {
       rating: Number(stars),
       id: entry.id
     }
-
-    // console.log(newEntry)
     
     updateEntry({ variables: { entry: newEntry } })
       .then(res => {

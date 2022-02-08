@@ -1,18 +1,10 @@
 import { useRef, useEffect } from 'react'
 import { ConversationalForm } from 'conversational-form'
 import { GQLClient } from '../lib/graphqlClient'
-import { gql } from 'graphql-request'
+import { ADD_ENTRY } from '../lib/queries'
 import { v1 as uuid } from 'uuid'
 import { useSession } from 'next-auth/react'
 import router from 'next/router'
-
-const ADD_ENTRY = gql`
-mutation Mutation($entry: EntryInput) {
-  addEntry(entry: $entry) {
-    validation
-    message
-  }
-}`;
 
 const ChatForm = ({ fields, variant }: { fields: object[], variant: string }) => {
 
