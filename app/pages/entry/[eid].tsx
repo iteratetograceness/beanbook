@@ -9,7 +9,6 @@ import { GET_ENTRY, UPDATE_ENTRY, DELETE_ENTRY } from '../../lib/queries';
 import { HeartFilled, HeartOutlined, DollarCircleFilled, CoffeeOutlined, ShopOutlined, CalendarFilled, ExperimentOutlined, TableOutlined, PaperClipOutlined, FireFilled, TagOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useState, useEffect } from 'react';
 
-
 const Container = styled.div`
   background-color: ${props => props.theme.colors.light};
   width: calc(100vw - 9rem);
@@ -176,9 +175,10 @@ const Entry = () => {
   }
 
   const handleEdit = () => {
+    sessionStorage.setItem('entry', JSON.stringify(entry.getEntry));
     router.push({
       pathname: '/edit',
-      query: { id }
+      query: { name: entry.getEntry.origin_name }
     });
   }
 

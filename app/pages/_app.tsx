@@ -12,7 +12,6 @@ const GlobalStyle = createGlobalStyle`
 `
 
 function MyApp({ Component, pageProps: { session, ...pageProps }, router }: AppProps) {
-
   
   return (
     <SessionProvider session={session} refetchInterval={5 * 60}>

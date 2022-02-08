@@ -1,94 +1,15 @@
-import { useState, useLayoutEffect } from 'react'
+import { Suspense, useEffect } from 'react'
+import Layout from '../components/layout'
+import styled from 'styled-components'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { useForm } from "react-hook-form";
-import { yupResolver } from '@hookform/resolvers/yup';
-import { beanSchema } from "../lib/yupSchemas";
-import Layout from '../components/layout';
-import styled from 'styled-components';
-import { LeftCircleFilled, RightCircleFilled } from '@ant-design/icons';
-import Button from '../components/button';
-import { DefaultEntry, EmptyEntry } from '../lib/types/default-entry';
-import { useMutation } from '@apollo/client';
-import { UPDATE_ENTRY } from '../lib/queries';
-import Loading from '../components/loading';
+import { DefaultEntry, EmptyEntry } from '../lib/types/default-entry'
 
-const schema = beanSchema
+const DynamicChatForm = dynamic(() => import('../components/chatForm'), {
+  ssr: false
+})
 
 const Container = styled.div`
-  display: flex;
-  background-color: ${props => props.theme.colors.light};
-  min-height: 50vh;
-  width: 90%;
-  padding: 2rem 0;
-  border-radius: 1rem;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-
-  @media (max-width: 465px) {
-    flex-direction: column;
-
-    .first-col-container {
-      margin-bottom: 2rem;
-    }
-
-    .second-col {
-      margin: 1rem;
-    }
-  }
-
-  a {
-    background-color: #f5f5f5;
-  }
-
-  div {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .first-col-container {
-    flex-direction: row;
-    width: 100px;
-    flex-grow: 0;
-  }
-
-  .first-col {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    padding: 1rem;
-    align-self: flex-start;
-    color: ${props => props.theme.colors.light};
-    background-color: ${props => props.theme.colors.dark};
-    border-top-right-radius: 1rem;
-    border-bottom-right-radius: 1rem;
-
-    h1 {
-      font-size: 2rem;
-      margin: 0;
-    }
-
-    .new-keyword {
-      color: ${props => props.theme.colors.darkest};
-      font-size: 2.5rem;
-    }
-  }
-
-  .second-col {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    margin: 0 2rem;
-  }
-`
-
-const arrowStyles = {
-  color: '#7e705f',
-  fontSize: '3rem',
-  cursor: 'pointer',
-  width: '3rem',
-  margin: '.5rem',
-}
-
-const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row !important;
   align-items: center;
@@ -96,149 +17,147 @@ const ButtonContainer = styled.div`
   width: 100%;
   align-self: flex-end;
   margin-top: 1rem;
-
-  button {
-    &:hover {
-      background-color: ${props => props.theme.colors.darkest};
-      transform: scale(1.02);
-      cursor: pointer;
-      transition: all 0.2s ease-in-out;
-    }
-  }
-
-  span {
-    &:hover {
-      color: ${props => props.theme.colors.darkest} !important;
-      transform: scale(1.03);
-      transition: all 0.2s ease-in-out;
-    }
-  }
 `
+
+const isSSR = typeof window === 'undefined'
 
 function EditBeans() {
 
   const router = useRouter()
+  const { name } = router.query
 
-  const [ page, setPage ] = useState(1)
-  const [ stars, setStars ] = useState(1)
-  const [ brew_method, setBrewMethod ] = useState<string[]>([])
-  const [ taste_tags, setTasteTags ] = useState<string[]>([])
-  const [ entry, setEntry ] = useState<DefaultEntry>(router.query as DefaultEntry | any)
+  const tasteTags = [ 'floral', 'fruity', 'sour/fermented', 'green/vegetable', 'roasted', 'spices', 'nutty/cocoa', 'sweet', 'other' ]
 
-  const [updateEntry, { loading, error }] = useMutation(UPDATE_ENTRY);
+  const brewMethods = [ 'cupping', 'drip', 'espresso', 'siphon', 'aeropress', 'chemex', 'pour over', 'french press' ]
 
-  const { register, getValues } = useForm({
-    resolver: yupResolver(schema)
-  });
+  const keys = [ 'origin_name', 'price', 'roaster', 'producer', 'roast_date', 'variety', 'process', 'brew_method', 'taste_tags', 'notes' ]
 
-  const editEntry = async (e: MouseEvent) => {
-    e.preventDefault()
+  const generateCheckboxes = (tags: string[], name: string) => {
+    return tags.map(tag => {
 
-    const values = getValues();
+      let label = tag
+      if (tag.includes('_')) label = tag.replace('_', ' ')
+      if (tag === 'origin_name') label = 'Origin/Name'
 
-    let newEntry: DefaultEntry = {
-      ...values,
-      price: values.price ? Number(values.price) : null,
-      roast_date: values.roast_date ? new Date(values.roast_date) : null,
-      brew_method: brew_method,
-      taste_tags: taste_tags,
-      rating: Number(stars),
-      id: entry.id
-    }
-    
-    updateEntry({ variables: { entry: newEntry } })
-      .then(res => {
-        if (!res.data.updateEntry.validation || error) {
-          // TODO: Custom error popup/toast
-          alert(error || res.data.updateEntry.message)
-        } else {
-          router.push({
-            pathname: `/entry/${newEntry.origin_name}`,
-            query: { id: newEntry.id },
-          })
-        }
-      })
-      .catch(err => {
-        // TODO: Custom error popup/toast
-        alert(err.message)
-      })
+      let child: {[key:string]:string} = {
+        'tag': 'input',
+        'type': 'checkbox',
+        'name': name, 
+        'value': tag, 
+        'cf-label': label[0].toUpperCase() + label.substring(1)
+      }
+
+      if (name === 'brew_method' || name === 'taste_tags') child['cf-conditional-additional'] = name
+
+      return child
+    })
   }
 
-  const nextPage = () => {
-    setPage(prev => page + 1)
-  }
+  let entry: DefaultEntry = EmptyEntry;
 
-  const prevPage = () => {
-    setPage(prev => page - 1)
-  }
+  useEffect(() => {
+    entry = sessionStorage.getItem('entry') ? JSON.parse(sessionStorage.getItem('entry') as string) : null
+    if (!entry) router.push('/home')
+  }, [])
 
-  // useLayoutEffect(() => {
-  //   let old: any = router.query;
+  let fields = [
+    {
+      'tag': 'fieldset',
+      'name': 'edit',
+      'cf-questions': `Hi, looks like you\'re here to edit ${name}. Which of the following parts of this entry would you like to revise?`,
+      'children': generateCheckboxes(keys, 'edit')
+    },
+    {
+      'tag': 'input',
+      'type': 'text',
+      'name': 'origin_name',
+      'cf-conditional-edit': 'origin_name',
+      'cf-questions': `So you want to change the name of the beans from '${name}' to?`
+    },
+    {
+      'tag': 'input',
+      'type': 'text',
+      'name': 'price',
+      'cf-conditional-edit': 'price',
+      'cf-questions': `You said you initially paid $${entry.price || 'nothing'} for these beans. What would you like to change the price to?`
+    },
+    {
+      'tag': 'input',
+      'type': 'text',
+      'name': 'roaster',
+      'cf-conditional-edit': 'roaster',
+      'cf-questions': `You previously listed ${entry.roaster || 'no one'} as the roaster. What would you like to change that to?`
+    },
+    {
+      'tag': 'input',
+      'type': 'text',
+      'name': 'producer',
+      'cf-conditional-edit': 'producer',
+      'cf-questions': `You previously listed ${entry.producer || 'no one'} as the producer. What would you like to change that to?`
+    },
+    {
+      'tag': 'input',
+      'type': 'text',
+      'name': 'roast_date',
+      'cf-conditional-edit': 'roast_date',
+      'cf-questions': `You listed ${entry.roast_date || 'nothing'} for the roast date. What would you like to change that to?`
+    },
+    {
+      'tag': 'input',
+      'type': 'text',
+      'name': 'variety',
+      'cf-conditional-edit': 'variety',
+      'cf-questions': `Previously, you noted the variety to be ${entry.variety || 'nothing'}. What would you like to change that to?`
+    },
+    {
+      'tag': 'input',
+      'type': 'text',
+      'name': 'process',
+      'cf-conditional-edit': 'process',
+      'cf-questions': `You listed the process as ${entry.process || 'nothing'} initially. What would you like to change that to?`
+    },
+    {
+      'tag': 'fieldset',
+      'name': 'brew_method',
+      'cf-conditional-edit': 'brew_method',
+      'cf-questions': `Previously, you noted that you brewed these beans with the following: ${ entry.brew_method?.split(', ') || 'none'}.How did you brew these beans?`,
+      'children': generateCheckboxes(brewMethods, 'brew_method')
+      // TODO: add functionality to add custom brew methods
+    },
+    {
+      'tag': 'fieldset',
+      'name': 'taste_tags',
+      'cf-conditional-additional': 'taste_tags',
+      'cf-questions': 'How would you describe the taste of these beans?',
+      'children': generateCheckboxes(tasteTags, 'taste_tags')
+    },
+    {
+      'tag': 'input',
+      'type': 'text',
+      'name': 'other_taste_tags',
+      'cf-conditional-additional': 'taste_tags|other',
+      'cf-questions': 'Any other tasting notes you\'d like to specify? Please separate multiple phrases with commas.'
+    },
+    {
+      'tag': 'textarea',
+      'type': 'text',
+      'name': 'notes',
+      'cf-conditional-additional': 'notes',
+      'cf-questions': 'Any additional details? Add any notes you\'d like to add to this entry.'
+    },
+  ]
 
-  //   if (typeof old.brew_method === 'string') {
-  //     let brew_methods = []
-  //     brew_methods.push(entry.brew_method)
-  //     old.brew_method = brew_methods
-  //   } 
-
-  //   if (typeof old.taste_tags === 'string') {
-  //     let taste_tags = []
-  //     taste_tags.push(entry.taste_tags)
-  //     old.taste_tags = taste_tags
-  //   } 
-
-  //   old = {
-  //     ...old,
-  //     roast_date: old.roast_date ? Number(old.roast_date) : null,
-  //     favorited: old.favorited === 'true' ? true : false,
-  //     price: old.price ? Number(old.price) : null,
-  //     rating: old.rating ? Number(old.rating) : null,
-  //   }
-  //   setEntry(old)
-  //   setStars(old.rating)
-  //   setBrewMethod(old.brew_method)
-  //   setTasteTags(old.taste_tags)
-  // }, [router.query])
-
-  if (loading) {
-    return <Loading/>
-  } else {
-      return (
-      <Layout>
-          <Container>
-            <div className="first-col-container">
-              <div className='first-col'>
-                <h1>+</h1>
-                <h1 className='new-keyword'>edit</h1>
-                <h1>entry</h1>
-              </div>
-            </div>
-            
-            <form className='second-col' id='entry-form'>
-              <h1>Currently under maintenance! Thank you for your patience.</h1>
-              {/* { page === 1 && <EntryPageOne register={register} entry={entry}/> }
-              { page === 2 && <EntryPageTwo stars={stars} setStars={setStars} register={register} entry={entry}/> }
-              { page === 3 && <EntryPageThree brew_method={brew_method} setBrewMethod={setBrewMethod} taste_tags={taste_tags} setTasteTags={setTasteTags} entry={entry} /> } */}
-              {/* <ButtonContainer>
-                { page > 1 && page <= 3 && <LeftCircleFilled style={arrowStyles} onClick={prevPage} /> }
-                { page < 3 && <RightCircleFilled 
-                  style={arrowStyles} 
-                  onClick={nextPage} 
-                /> }
-                { page === 3 && <Button 
-                  inverse='false' 
-                  variant='primary' 
-                  form='entry-form'
-                  onClick={(e: any) => editEntry(e)}
-                >
-                  Submit
-                </Button> }
-              </ButtonContainer> */}
-            </form>
-          </Container>
-      </Layout>
-    )
-  }
+  return (
+    <Layout>
+      { isSSR && <Container /> }
+      { !isSSR && (
+        <Suspense fallback={<div />}>
+          <DynamicChatForm fields={fields} variant='editEntry'/>
+        </Suspense>
+      ) }
+    </Layout>
+  )
+  
 }
 
 export default EditBeans

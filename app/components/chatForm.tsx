@@ -69,7 +69,11 @@ const ChatForm = ({ fields, variant }: { fields: object[], variant: string }) =>
       setTimeout(() => goToEntry(entry.origin_name, entry.id), 2500)
   };
 
-  const editEntry = () => {}
+  const editEntry = () => {
+    const userid = session?.user.user_id
+    //const data = chat.getFormData(true)
+    //console.log(userid, data)
+  }
 
   return (
     <form ref={ref} />
