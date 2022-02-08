@@ -104,10 +104,6 @@ const AnimatedLetters = ({ title }: AnimatedLettersProps) => {
     }
   }, [router.events, loading])
 
-  useEffect(() => {
-    router.prefetch('/home')
-  }, [router])
-
   if (loading) return <Loading/>
 
   else return (

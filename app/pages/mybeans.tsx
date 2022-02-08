@@ -6,11 +6,6 @@ import styled from "styled-components";
 import Grid from "../components/grid";
 import SearchBar from "../components/search";
 import { GET_ENTRIES } from "../lib/queries";
-import { useQuery } from "@apollo/client";
-import { initializeApollo } from "../lib/client";
-import { useRouter } from "next/router";
-import Loading from "../components/loading";
-import { useState, useEffect } from "react";
 import { CoffeeCardType } from "../lib/types/entries";
 import { GQLClient } from "../lib/graphqlClient";
 

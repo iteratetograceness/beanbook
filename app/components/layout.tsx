@@ -5,9 +5,6 @@ import Footer from './footer';
 import styled from 'styled-components';
 import Error from "../pages/_error";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import Loading from './loading';
 
 const Container = styled.div`
     display flex;

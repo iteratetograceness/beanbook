@@ -1,6 +1,4 @@
 import { Suspense } from 'react'
-import { useRouter } from 'next/router'
-import { beanSchema } from "../lib/yupSchemas";
 import Layout from '../components/layout';
 import styled from 'styled-components';
 import dynamic from 'next/dynamic'

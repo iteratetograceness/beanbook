@@ -1,11 +1,10 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router'
 import useSWR from 'swr'
-import { request } from 'graphql-request'
 import styled from 'styled-components';
 import Loading from '../../components/loading';
 import Layout from '../../components/layout';
-import { useMutation } from "@apollo/client";
+import { GQLClient } from '../../lib/graphqlClient';
 import { GET_ENTRY, UPDATE_ENTRY, DELETE_ENTRY } from '../../lib/queries';
 import { HeartFilled, HeartOutlined, DollarCircleFilled, CoffeeOutlined, ShopOutlined, CalendarFilled, ExperimentOutlined, TableOutlined, PaperClipOutlined, FireFilled, TagOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useState, useEffect } from 'react';
@@ -144,7 +143,7 @@ const ButtonContainer = styled.div`
   }
 `;
 
-const fetcher = (query:any, variables:any)  => request('/api/graphql', query, variables)
+const fetcher = (query:any, variables:any)  => GQLClient(query, variables)
 
 const Entry = () => {
 
@@ -157,11 +156,13 @@ const Entry = () => {
   const [ liked, setLiked ] = useState(false);
 
   useEffect(() => {
-    setLiked(() => entry?.getEntry.favorited)
+
+    if (entry) setLiked(() => entry.getEntry.favorited)
+    
   }, [entry])
 
-  const [ updateEntry, { loading, error: postError } ] = useMutation(UPDATE_ENTRY);
-  const [ deleteEntry ] = useMutation(DELETE_ENTRY);
+  // const [ updateEntry, { loading, error: postError } ] = useMutation(UPDATE_ENTRY);
+  // const [ deleteEntry ] = useMutation(DELETE_ENTRY);
 
   const handleLike = async (e: MouseEvent) => {
     e.preventDefault();
@@ -169,28 +170,24 @@ const Entry = () => {
       id: router.query.id,
       favorited: !liked
     }
-    await updateEntry({ variables: { entry: update } })
     setLiked(!liked);
-    window.location.reload();
+    const res = GQLClient(UPDATE_ENTRY, { entry: update });
+    // TODO: Error handling
   }
 
   const handleEdit = () => {
-    const oldValues = {...entry.getEntry, id: router.query.id};
     router.push({
       pathname: '/edit',
-      query: oldValues
+      query: { id }
     });
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     const entryID = router.query.id
-    deleteEntry({ variables: { entryID } })
-      .then((res) => {
-        if (res.data.deleteEntry.validation) {
-          window.location.href = '/home'
-        } else alert('Could not delete entry!');
-      })
-      .catch(err => console.log(err));
+    const { deleteEntry } = await GQLClient(DELETE_ENTRY, { entryID })
+    if (deleteEntry.validation) {
+      router.push('/home')
+    } else alert('Could not delete entry!');
   }
 
   const listOfMethods = entry?.getEntry.brew_method.length ? entry?.getEntry.brew_method.map((method: string, index: number) => {
@@ -212,7 +209,7 @@ const Entry = () => {
   }) : null
 
   if (loadingError) router.push('/404')
-  if (!entry || loading) return <Loading />;
+  if (!entry) return <Loading />;
   else {
     return (
     <Layout>
