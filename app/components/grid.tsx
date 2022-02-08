@@ -1,4 +1,3 @@
-import { GetServerSidePropsContext } from "next";
 import CoffeeCard from "./coffeecard";
 import styled from "styled-components";
 import { CoffeeCardType } from "../lib/types/entries";
@@ -43,12 +42,6 @@ function Grid({ type, entries }: { type: string, entries: CoffeeCardType[] }) {
       { cards }
     </GridContainer>
   )
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  return {
-    props: {},
-  }
 }
 
 export default Grid

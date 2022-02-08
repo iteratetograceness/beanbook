@@ -1,6 +1,6 @@
 import React from 'react'
 import Grid from '../components/grid'
-import { useQuery } from '@apollo/client';
+import { GQLClient } from '../lib/graphqlClient';
 import { GET_SEARCH } from "../lib/queries";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -9,6 +9,8 @@ import Layout from '../components/layout';
 import Title from '../components/title';
 import { SearchOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
+import { GetServerSidePropsContext } from 'next';
+import { getSession } from 'next-auth/react';
 
 const Container = styled.div`
   display: flex;
@@ -28,39 +30,50 @@ const GridContainer = styled.div`
   align-items: center;
 `;
 
-function SearchResults() {
+function SearchResults({ results }: { results: any }) {
 
-  const router = useRouter();
-  const { query } = router;
-  const { data: session } = useSession()
-
-  const variables = {
-    userid: session?.user.user_id,
-    query: query.query,
-    filters: query.filter,
-  }
-  
-  const { loading, error, data } = useQuery(GET_SEARCH, {
-    variables
-  });
-  
-  if (error) router.push('/404')
-
-  if (loading) return <Loading/>
-  else {
-    return (
-      <Layout>
-        <Container>
-          <TitleContainer>
-            <Title name='search results' icon={<SearchOutlined style={{ marginRight: '4px' }}/>}/>
-          </TitleContainer>
-          <GridContainer>
-            <Grid type='all' entries={data.getSearch}/>
-          </GridContainer>
-        </Container>
-      </Layout>
-    )
-  }
+  return (
+    <Layout>
+      <Container>
+        <TitleContainer>
+          <Title name='search results' icon={<SearchOutlined style={{ marginRight: '4px' }}/>}/>
+        </TitleContainer>
+        <GridContainer>
+        { !results.length 
+          ? <p> No results found.</p> 
+          : <Grid type='all' entries={results}/> }
+        </GridContainer>
+      </Container>
+    </Layout>
+  )
 }
 
 export default SearchResults
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  console.log(ctx.query)
+
+  const session = await getSession({ req: ctx.req })
+
+  if (!session) {
+    return {
+      notFound: true
+    }
+  }
+
+  const userid = session?.user?.user_id
+
+  const variables = {
+    userid,
+    query: ctx.query.query,
+    filters: ctx.query.filter,
+  }
+
+  const { getSearch } = await GQLClient(GET_SEARCH, variables);
+
+  return {
+    props: {
+      results: getSearch
+    }
+  }
+}
