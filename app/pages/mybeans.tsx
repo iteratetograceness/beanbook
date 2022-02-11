@@ -53,12 +53,7 @@ const MyBeans = ({ user_id, entries }: { user_id: any, entries: CoffeeCardType[]
 }
 
 export async function getServerSideProps (context: GetServerSidePropsContext) {
-
-  context.res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=1800, stale-while-revalidate=5'
-  )
-
+  
   const session = await getSession({ req: context.req })
 
   if (!session) {
