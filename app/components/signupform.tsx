@@ -76,7 +76,7 @@ const SignUpForm: FunctionComponent = () => {
       router.push('/login');
     } else {
       // TODO: replace with custom popup modal
-      alert(res.message);
+      alert(res);
     }
   };
 
