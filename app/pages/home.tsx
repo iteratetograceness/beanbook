@@ -17,11 +17,6 @@ const Home = ({ userid, firstname, recentEntries }: { userid: string | undefined
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
 
-  context.res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=1800, stale-while-revalidate=5'
-  )
-
   const session = await getSession({ req: context.req })
 
   if (!session) {
