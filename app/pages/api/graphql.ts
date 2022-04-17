@@ -6,16 +6,6 @@ import { resolvers } from "./resolvers";
 
 const cors = Cors();
 
-// const createContext = async ({ req }: { req: NextApiRequest }) => {
-//   const session = await getSession({ req });
-
-//   console.log('ctx', session)
-
-//   return {
-//     session
-//   }
-// };
-
 const server = new ApolloServer({ 
   typeDefs, 
   resolvers

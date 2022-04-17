@@ -4,7 +4,7 @@ export const GQLClient = async (query: any, variables?: {[key:string]:any}) => {
 
   const client = new GraphQLClient(`${process.env.NEXT_PUBLIC_SITE}api/graphql`)
 
-  
+
   const headers = {
 
   }

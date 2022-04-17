@@ -30,13 +30,6 @@ export default NextAuth({
       async authorize(credentials: Record<"username" | "password", string> | undefined | any, req) {
         
         const { username, password } = credentials
-        console.log(credentials)
-        // const apolloClient = initializeApollo()
-
-        // const res = await apolloClient.mutate({
-        //   mutation: LOGIN,
-        //   variables: { username, password }
-        // })
 
         const res = await GQLClient(LOGIN, { username, password })
 
