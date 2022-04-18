@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es2015",
+    "target": "esnext",
     "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
+      "es6",
+      "es7",
+      "esnext",
+      "dom"
     ],
     "allowJs": true,
-    "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
@@ -18,7 +18,8 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "downlevelIteration": true,
-    "incremental": true
+    "incremental": true,
+    "skipLibCheck": true
   },
   "include": [
     "app/next-env.d.ts",
