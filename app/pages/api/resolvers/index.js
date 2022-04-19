@@ -7,29 +7,10 @@ const pool = new Pool({connectionString});
 export const resolvers = 
   { 
     Query: {
-      getUsers: async (root, args, context, info) => {
-        try {
-          const query = `SELECT * FROM users`;
-          const users = await pool.query(query);
-          return users.rows;
-        } catch (error) {
-          return error;
-        }
-      },
-      getUser: async (root, args, context, info) => {
-        try {
-          const username = args.username;
-          const query = `SELECT * FROM users WHERE username = $1`;
-          const users = await pool.query(query, [username]);
-          return users.rows[0];
-        } catch (error) {
-          return error;
-        }
-      },
       getEntries: async (root, args, context, info) => {
         try {
           const userid = args.userid;
-          const query = `SELECT * FROM entries WHERE userid = $1 ORDER BY created_on DESC`;
+          const query = `SELECT origin_name, favorited, rating, created_on, id FROM entries WHERE userid = $1 ORDER BY created_on DESC`;
           const entries = await pool.query(query, [userid]);
           return entries.rows;
         } catch (error) {
@@ -50,17 +31,17 @@ export const resolvers =
       getSearch: async (root, args, context, info) => {
         const { userid, query, filters } = args;
 
-        let queryString = `SELECT * FROM entries WHERE userid = $1 AND `;
+        let queryString = `SELECT origin_name, favorited, rating, created_on, id FROM entries WHERE userid = $1 AND `;
         let variables = [userid, query];
 
         if (!filters) {
-          queryString += `origin_name SIMILAR TO $2 OR roaster SIMILAR TO $2 OR producer SIMILAR TO $2 OR variety SIMILAR TO $2 OR process SIMILAR TO $2 OR notes SIMILAR TO $2`;
+          queryString += `UPPER(origin_name) LIKE UPPER($2) OR UPPER(roaster) LIKE UPPER($2) OR UPPER(producer) LIKE UPPER($2) OR UPPER(variety) LIKE UPPER($2) OR UPPER(process) LIKE UPPER($2) OR UPPER(notes) LIKE $2`;
         } else {
           let len = filters.length + 2;
           let i = 3;
 
           for (let filter of filters) { 
-            queryString += `${filter} SIMILAR TO $2 ${i === len ? '' : 'OR '}`;
+            queryString += `UPPER(${filter}) LIKE UPPER($2) ${i === len ? '' : 'OR '}`;
             i++;
           }
         }
@@ -99,11 +80,10 @@ export const resolvers =
       },
       login: async (root, args, context, info) => {
         try {
-          const query = `SELECT * FROM users WHERE username = $1`;
+          const query = `SELECT id, firstname, password FROM users WHERE username = $1`;
           const users = await pool.query(query, [args.username]);
           const user = users.rows[0];
           if (user && compareSync(args.password, user.password)) {
-
             return {
               user_id: user.id,
               firstname: user.firstname,
