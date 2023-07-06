@@ -1,8 +1,8 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { LOGIN } from "@lib/queries"
-import type { JWT } from "next-auth/jwt"
-import { GQLClient } from '@lib/graphqlClient'
+import { LOGIN } from '@/lib/queries'
+import type { JWT } from 'next-auth/jwt'
+import { GQLClient } from '@/lib/graphqlClient'
 
 export default NextAuth({
   useSecureCookies: process.env.NODE_ENV === "production",

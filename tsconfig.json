@@ -2,7 +2,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@lib/*": ["lib/*"],
+      "@/*": [
+        "./*"
+      ]
     },
     "target": "esnext",
     "lib": [
@@ -23,13 +25,19 @@
     "jsx": "preserve",
     "downlevelIteration": true,
     "incremental": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
     "app/next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "app/lib/types/*.ts"
+    "app/lib/types/*.ts",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"
