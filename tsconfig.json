@@ -2,17 +2,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     },
     "target": "esnext",
-    "lib": [
-      "es6",
-      "es7",
-      "esnext",
-      "dom"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -32,14 +25,6 @@
       }
     ]
   },
-  "include": [
-    "app/next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "app/lib/types/*.ts",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }
