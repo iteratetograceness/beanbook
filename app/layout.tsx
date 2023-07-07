@@ -1,7 +1,7 @@
 import '../styles/globals.css'
 import { Inter } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
-import { Theme } from '@/lib/constants'
+import { THEME } from '@/lib/constants'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -9,7 +9,7 @@ export const metadata = {
   title: 'Sips',
   description: 'A simple coffee tasting journal app',
   icons: {
-    icon: '/favicon_sips.ico',
+    icon: '/favicon.ico',
   },
 }
 
@@ -22,14 +22,14 @@ export default function RootLayout({
     <ClerkProvider
       appearance={{
         variables: {
-          colorPrimary: Theme.colors.primary,
-          colorText: Theme.colors.primary,
-          colorDanger: Theme.colors.error,
-          colorSuccess: Theme.colors.success,
-          colorWarning: Theme.colors.warning,
-          colorInputText: Theme.colors.primary,
-          borderRadius: Theme.units.borderRadius,
-          colorAlphaShade: Theme.colors.shadow,
+          colorPrimary: THEME.colors.primary,
+          colorText: THEME.colors.primary,
+          colorDanger: THEME.colors.error,
+          colorSuccess: THEME.colors.success,
+          colorWarning: THEME.colors.warning,
+          colorInputText: THEME.colors.primary,
+          borderRadius: THEME.units.borderRadius,
+          colorAlphaShade: THEME.colors.shadow,
         },
       }}
     >
