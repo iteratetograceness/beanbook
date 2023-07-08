@@ -3,7 +3,7 @@ import { UserButton } from '@clerk/nextjs'
 import Link from 'next/link'
 import { Button } from './ui/button'
 
-export async function NavBar() {
+export function NavBar() {
   return (
     <nav className='flex w-full bg-accent p-3 rounded-xl justify-between'>
       <div className='flex items-center gap-3'>
