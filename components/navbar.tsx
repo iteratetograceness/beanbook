@@ -3,11 +3,7 @@ import { UserButton } from '@clerk/nextjs'
 import Link from 'next/link'
 import { Button } from './ui/button'
 
-const LINKS = [
-  { href: '/', label: 'Home', icon: Home },
-  { href: '/about', label: 'Landing Page' },
-]
-export function NavBar() {
+export async function NavBar() {
   return (
     <nav className='flex w-full bg-accent p-3 rounded-xl justify-between'>
       <div className='flex items-center gap-3'>
@@ -16,10 +12,6 @@ export function NavBar() {
             <Home aria-label='Return to home' />
           </Link>
         </Button>
-        <input
-          placeholder='Search your sips...'
-          className='bg-muted p-2 rounded-lg'
-        />
       </div>
 
       <div className='flex items-center gap-3'>
@@ -28,7 +20,9 @@ export function NavBar() {
             <PlusCircle aria-label='Add new entry' />
           </Link>
         </Button>
-        <UserButton afterSignOutUrl='/signin' />
+        <div className='h-10 w-10 bg-primary rounded-full'>
+          <UserButton afterSignOutUrl='/signin' />
+        </div>
       </div>
     </nav>
   )
