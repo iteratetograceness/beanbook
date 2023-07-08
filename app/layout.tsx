@@ -1,7 +1,7 @@
-import '../styles/globals.css'
 import { Inter } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 import { THEME } from '@/lib/constants'
+import '../globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -29,7 +29,12 @@ export default function RootLayout({
           colorWarning: THEME.colors.warning,
           colorInputText: THEME.colors.primary,
           borderRadius: THEME.units.borderRadius,
-          colorAlphaShade: THEME.colors.shadow,
+        },
+        elements: {
+          card: {
+            borderRadius: THEME.units.borderRadius,
+            boxShadow: 'none',
+          },
         },
       }}
     >

@@ -11,6 +11,6 @@ export const THEME = {
     shadow: '#B2A491',
   },
   units: {
-    borderRadius: '8px',
+    borderRadius: '0.5rem',
   },
 }

@@ -3,7 +3,7 @@
   "tailwind": {
     "config": "tailwind.config.js",
     "css": "globals.css",
-    "baseColor": "zinc",
+    "baseColor": "slate",
     "cssVariables": true
   },
   "rsc": false,
