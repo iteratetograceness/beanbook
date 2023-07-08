@@ -1,169 +1,35 @@
-import React, { FunctionComponent, useState, useEffect } from 'react';
-import styled from 'styled-components';
-import Link from 'next/link';
-import Button from './button';
-import { useMediaQuery } from "react-responsive";
-import { bubble as Menu } from 'react-burger-menu';
-import { SettingFilled } from '@ant-design/icons';
-import { signOut } from "next-auth/react"
-import { useRouter } from 'next/router';
+import { Home, PlusCircle } from 'lucide-react'
+import { UserButton } from '@clerk/nextjs'
+import Link from 'next/link'
+import { Button } from './ui/button'
 
-const Nav = styled.nav`
-  display: grid;
-  grid-template-columns: 6fr 1fr 1fr .5fr 1fr;
-  max-width: 100vw;
-  
-  a {
-    font-family: Volkhov;
-    text-decoration: none;
-    color: #ded9d1;
-  }
-
-  .logo {
-    font-size: 2em;
-  }
-
-  .right-nav {
-    font-family: Inconsolata;
-    justify-self: center;
-    align-self: center;
-    margin-right: 1em;
-  }
-
-  .right-nav:hover {
-    font-weight: bold;
-    transition: all ease-in-out .6s;
-  }
-
-  p.right-nav {
-    margin-right: 0;
-  }
-
-  p.right-nav:hover {
-    text-decoration: none;
-  }
-
-  icon {
-    width: 20px
-  }
-
-  button {
-    margin-left: .5rem;
-  }
-`;
-
-var styles = {
-  bmBurgerButton: {
-    position: 'fixed',
-    width: '36px',
-    height: '30px',
-    right: '36px',
-    top: '36px'
-  },
-  bmBurgerBars: {
-    background: '#252222'
-  },
-  bmBurgerBarsHover: {
-    background: '#a90000'
-  },
-  bmCrossButton: {
-    height: '35px',
-    width: '35px',
-    top: '20px',
-    right: '25px',
-  },
-  bmCross: {
-    background: '#ded9d1',
-    height: '25px',
-    width: '5px'
-  },
-  bmMorphShape: {
-    fill: '#433f3c'
-  },
-  bmMenuWrap: {
-    position: 'fixed',
-    width: '65%'
-  },
-  bmMenu: {
-    background: '#252222',
-    padding: '3em 1em 0',
-    fontSize: '1.5em',
-    width: '100%',
-    overflow: 'hidden'
-  },
-  bmItemList: {
-    color: '#b8b7ad',
-    padding: '0.8em',
-  },
-  bmItem: {
-    display: 'inline-block',
-    background: '#433f3c',
-    marginBottom: '1em',
-    padding: '0.5em',
-    borderRadius: '0.5em',
-    transition: 'none'
-  },
-  bmOverlay: {
-    background: 'rgba(	222, 217, 209, 0.3)',
-  }
-}
-
-const NavBar: FunctionComponent = () => {
-  
-  const router = useRouter();
-
-  const isMobile = useMediaQuery({ maxWidth: 600 });
-
-  const handleSignOut = async () => {
-    const data = await signOut({ redirect: false, callbackUrl: process.env.NEXT_PUBLIC_SITE })
-    router.push(data.url)
-  }
-
-  if (isMobile) 
-    return (
-        <Nav id="outer-container">
-          <Link href="/home">
-            <a className='logo' style={{ margin: '2rem 2rem' }}>beanbook</a>
-          </Link>
-          <Menu styles={styles} right>
-              <a className='right-nav' href='/addbeans'>add bean</a>
-          
-              <a className='right-nav' href='/mybeans'>my beans</a>
-          
-              {/* <a className='right-nav' href='/home'>settings</a> */}
-          
-              <a className='right-nav' onClick={handleSignOut} >logout</a>
-          </Menu>
-        </Nav>
-    )
-
+const LINKS = [
+  { href: '/', label: 'Home', icon: Home },
+  { href: '/about', label: 'Landing Page' },
+]
+export function NavBar() {
   return (
-  <Nav style={{ margin: '2rem 2.5em' }} >
-    <Link href="/home">
-      <a className='logo'>beanbook</a>
-    </Link>
+    <nav className='flex w-full bg-accent p-3 rounded-xl justify-between'>
+      <div className='flex items-center gap-3'>
+        <Button size='icon' variant='secondary' asChild>
+          <Link href='/home'>
+            <Home aria-label='Return to home' />
+          </Link>
+        </Button>
+        <input
+          placeholder='Search your sips...'
+          className='bg-muted p-2 rounded-lg'
+        />
+      </div>
 
-    <Link href="/addbeans">
-      <a className='right-nav'>add bean</a>
-    </Link>
-
-    <Link href="/mybeans">
-      <a className='right-nav'>my beans</a>
-    </Link>
-
-    <Link href="/" >
-      <a className='right-nav icon'><SettingFilled spin={true} style={{ fontSize: '20px' }}/></a>
-    </Link>
-
-    <Button 
-      inverse='false'
-      variant='primary' 
-      onClick={handleSignOut} 
-      whileHover={{ scale: 1.1 }}
-    >
-      <p className='right-nav'>logout</p>
-    </Button>
-  </Nav>
-)}
-
-export default NavBar;
+      <div className='flex items-center gap-3'>
+        <Button size='icon' variant='secondary' asChild>
+          <Link href='/new'>
+            <PlusCircle aria-label='Add new entry' />
+          </Link>
+        </Button>
+        <UserButton afterSignOutUrl='/signin' />
+      </div>
+    </nav>
+  )
+}

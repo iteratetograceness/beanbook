@@ -35,6 +35,13 @@ export default function RootLayout({
             borderRadius: THEME.units.borderRadius,
             boxShadow: 'none',
           },
+          userButtonPopoverActionButtonIcon: {
+            color: THEME.colors.primary,
+          },
+          avatarBox: {
+            height: '2.5rem',
+            width: '2.5rem',
+          },
         },
       }}
     >

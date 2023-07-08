@@ -2,8 +2,8 @@ import { UserButton } from '@clerk/nextjs'
 
 export default function UserHome() {
   return (
-    <div>
-      <UserButton afterSignOutUrl='/signin' />
-    </div>
+    <section className='p-4'>
+      this is where users can see all their shit
+    </section>
   )
 }
