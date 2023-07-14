@@ -11,10 +11,10 @@
       --muted-foreground: 34 23% 42%;
    
       --popover: 0 0% 100%;
-      --popover-foreground: 222.2 47.4% 11.2%;
+      --popover-foreground: 34 60% 19.6%;
    
       --border: 35 14% 77%;
-      --input: 214.3 31.8% 91.4%;
+      --input: 36 12.2% 92%;
    
       --card: 0 0% 98%;
       --card-foreground: var(--foreground);
@@ -31,7 +31,7 @@
       --destructive: 0 100% 50%;
       --destructive-foreground: 210 40% 98%;
    
-      --ring: 215 20.2% 65.1%;
+      --ring: 34 26% 70%;
    
       --radius: 0.5rem;
     }

@@ -1,0 +1,20 @@
+CREATE TABLE sip (
+    id VARCHAR(255) PRIMARY KEY,
+    user_id VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+    name VARCHAR(255) NOT NULL,
+    origin VARCHAR(255),
+    price NUMERIC,
+    roaster VARCHAR(255),
+    roast_date TIMESTAMP,
+    rating INTEGER CHECK (rating >= 0 AND rating <= 10) NOT NULL,
+    roast VARCHAR(6),
+    brew_method TEXT[],
+    aroma TEXT[],
+    acidity TEXT[],
+    body TEXT[],
+    taste TEXT[],
+    finish TEXT[],
+    notes TEXT
+)
