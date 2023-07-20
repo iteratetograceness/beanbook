@@ -63,7 +63,7 @@ export function TastingGuide() {
   const [step, setStep] = useState(0)
 
   return (
-    <Sheet>
+    <Sheet onOpenChange={() => setStep(0)}>
       <SheetTrigger className='inline-flex gap-1 w-fit items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2'>
         <InfoIcon className='h-4 w-4' />
         Coffee Tasting Guide
@@ -71,7 +71,10 @@ export function TastingGuide() {
       <SheetContent>
         <SheetHeader>
           <SheetTitle>{"Sip's guide to tasting coffee"}</SheetTitle>
-
+          <p className='text-sm'>
+            Coffee tasting can feel overwhelming. Use this 8-step guide to help
+            you get started.
+          </p>
           <div className='flex gap-1 py-4'>
             {steps.map((_, i) => (
               <Badge
