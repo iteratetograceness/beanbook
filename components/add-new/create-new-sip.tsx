@@ -69,12 +69,15 @@ export function CreateNewSip() {
 
     try {
       const id = await createSip({ form: values, userId: user.id })
-      router.push(`/${id}`)
+      sipForm.reset()
+      router.push(`/entry/${id}`)
     } catch (error) {
-      // TODO
+      console.log('ERROR')
+      sipForm.setError('root.serverError', {
+        type: '500',
+      })
+      console.log(sipForm.formState)
     }
-
-    sipForm.reset()
   }
 
   return (
@@ -466,7 +469,12 @@ export function CreateNewSip() {
               </FormItem>
             )}
           />
-          <Button className='w-fit mt-4' type='submit'>
+          <p className='text-sm text-destructive'>
+            {sipForm.formState.errors.root?.serverError.type
+              ? 'Something went wrong. Please try again!'
+              : ''}
+          </p>
+          <Button className='w-fit' type='submit'>
             Submit
           </Button>
         </form>
