@@ -72,7 +72,6 @@ export function CreateNewSip() {
       sipForm.reset()
       router.push(`/entry/${id}`)
     } catch (error) {
-      console.log('ERROR')
       sipForm.setError('root.serverError', {
         type: '500',
       })
