@@ -30,16 +30,26 @@ import {
   sipSchema,
 } from '@/lib/schemas'
 import { Info } from 'lucide-react'
-import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
-import { Label } from '../ui/label'
 import { Popover, PopoverTrigger, PopoverContent } from '../ui/popover'
 import { cn } from '@/lib/utils'
 import { Calendar } from '../ui/calendar'
 import { MultiSelect } from './multi-select'
 import { BREW_METHOD } from '@/lib/schemas'
 import { Textarea } from '../ui/textarea'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { useUser } from '@clerk/nextjs'
+import { createSip } from '@/lib/actions'
+import { useRouter } from 'next/navigation'
 
 export function CreateNewSip() {
+  const { user } = useUser()
+  const router = useRouter()
   const sipForm = useForm<SipSchema>({
     resolver: zodResolver(sipSchema),
     defaultValues: {
@@ -54,8 +64,17 @@ export function CreateNewSip() {
     },
   })
 
-  function onSubmit(values: SipSchema) {
-    console.log(values)
+  async function onSubmit(values: SipSchema) {
+    if (!user) return
+
+    try {
+      const id = await createSip({ form: values, userId: user.id })
+      router.push(`/${id}`)
+    } catch (error) {
+      // TODO
+    }
+
+    sipForm.reset()
   }
 
   return (
@@ -91,9 +110,9 @@ export function CreateNewSip() {
                   <FormLabel>Price</FormLabel>
                   <FormControl>
                     <Input
-                      {...field}
                       placeholder='19.99'
                       type='number'
+                      {...field}
                       {...sipForm.register('price', {
                         setValueAs: (v: string) =>
                           v === '' ? undefined : parseInt(v, 10),
@@ -209,25 +228,18 @@ export function CreateNewSip() {
                       <Info size={16} />
                     </FormLabel>
                   </TooltipTrigger>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue='medium'
-                    >
-                      <div className='flex items-center space-x-2'>
-                        <RadioGroupItem value='light' id='r1' />
-                        <Label htmlFor='r1'>Light</Label>
-                      </div>
-                      <div className='flex items-center space-x-2'>
-                        <RadioGroupItem value='medium' id='r2' />
-                        <Label htmlFor='r2'>Medium</Label>
-                      </div>
-                      <div className='flex items-center space-x-2'>
-                        <RadioGroupItem value='dark' id='r3' />
-                        <Label htmlFor='r3'>Dark</Label>
-                      </div>
-                    </RadioGroup>
-                  </FormControl>
+                  <Select onValueChange={field.onChange} defaultValue='medium'>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder='Select a roast' />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value='light'>Light</SelectItem>
+                      <SelectItem value='medium'>Medium</SelectItem>
+                      <SelectItem value='dark'>Dark</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

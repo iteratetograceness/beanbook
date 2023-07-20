@@ -110,7 +110,7 @@ export const sipSchema = z.object({
 export type SipSchema = z.infer<typeof sipSchema>
 
 interface SipTable {
-  id: `sip_${string}`
+  id: string
   user_id: string
   created_at: ColumnType<Date, string, never>
   updated_at: ColumnType<Date, string | undefined, never>
