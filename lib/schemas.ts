@@ -100,12 +100,12 @@ export const sipSchema = z.object({
     .min(0)
     .max(10),
   roast: z.optional(z.enum(ROAST)),
-  brew_method: z.optional(z.array(z.string())),
-  aroma: z.optional(z.array(z.string())),
-  acidity: z.optional(z.array(z.string())),
-  body: z.optional(z.array(z.string())),
-  taste: z.optional(z.array(z.string())),
-  finish: z.optional(z.array(z.string())),
+  brew_method: z.array(z.string()),
+  aroma: z.array(z.string()),
+  acidity: z.array(z.string()),
+  body: z.array(z.string()),
+  taste: z.array(z.string()),
+  finish: z.array(z.string()),
   notes: z.optional(z.string()),
 })
 
