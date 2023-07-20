@@ -40,7 +40,7 @@ import { BREW_METHOD } from '@/lib/schemas'
 import { Textarea } from '../ui/textarea'
 
 export function CreateNewSip() {
-  const form = useForm<z.infer<typeof sipSchema>>({
+  const sipForm = useForm<z.infer<typeof sipSchema>>({
     resolver: zodResolver(sipSchema),
     defaultValues: {
       name: '',
@@ -60,16 +60,16 @@ export function CreateNewSip() {
 
   return (
     <TooltipProvider delayDuration={0}>
-      <Form {...form}>
+      <Form {...sipForm}>
         <form
           className='flex flex-col gap-4'
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={sipForm.handleSubmit(onSubmit)}
         >
           {/* Name and Price */}
           <div className='flex gap-4 flex-col sm:flex-row'>
             {/* Name */}
             <FormField
-              control={form.control}
+              control={sipForm.control}
               name='name'
               render={({ field }) => (
                 <FormItem className='flex-1 max-w-lg'>
@@ -83,7 +83,7 @@ export function CreateNewSip() {
             />
             {/* Price */}
             <FormField
-              control={form.control}
+              control={sipForm.control}
               name='price'
               render={({ field }) => (
                 <FormItem>
@@ -93,8 +93,8 @@ export function CreateNewSip() {
                       {...field}
                       placeholder='19.99'
                       type='number'
-                      {...form.register('price', {
-                        setValueAs: (v) =>
+                      {...sipForm.register('price', {
+                        setValueAs: (v: string) =>
                           v === '' ? undefined : parseInt(v, 10),
                       })}
                     />
@@ -111,7 +111,7 @@ export function CreateNewSip() {
             {/* Origin */}
             <Tooltip>
               <FormField
-                control={form.control}
+                control={sipForm.control}
                 name='origin'
                 render={({ field }) => (
                   <FormItem className='flex-1 sm:max-w-sm'>
@@ -134,7 +134,7 @@ export function CreateNewSip() {
             </Tooltip>
             {/* Roaster */}
             <FormField
-              control={form.control}
+              control={sipForm.control}
               name='roaster'
               render={({ field }) => (
                 <FormItem className='flex-1 sm:max-w-sm'>
@@ -152,7 +152,7 @@ export function CreateNewSip() {
             />
             {/* Roast Date */}
             <FormField
-              control={form.control}
+              control={sipForm.control}
               name='roast_date'
               render={({ field }) => (
                 <FormItem>
@@ -198,7 +198,7 @@ export function CreateNewSip() {
           {/* Roast */}
           <Tooltip>
             <FormField
-              control={form.control}
+              control={sipForm.control}
               name='roast'
               render={({ field }) => (
                 <FormItem>
@@ -258,7 +258,7 @@ export function CreateNewSip() {
             {/* Brew Method */}
             <Tooltip>
               <FormField
-                control={form.control}
+                control={sipForm.control}
                 name='brew_method'
                 render={({ field }) => (
                   <FormItem className='flex-1 sm:max-w-md'>
@@ -287,7 +287,7 @@ export function CreateNewSip() {
             {/* Aroma */}
             <Tooltip>
               <FormField
-                control={form.control}
+                control={sipForm.control}
                 name='aroma'
                 render={({ field }) => (
                   <FormItem className='flex-1 sm:max-w-md'>
@@ -319,7 +319,7 @@ export function CreateNewSip() {
             {/* Acidity */}
             <Tooltip>
               <FormField
-                control={form.control}
+                control={sipForm.control}
                 name='acidity'
                 render={({ field }) => (
                   <FormItem className='flex-1 sm:max-w-md'>
@@ -348,7 +348,7 @@ export function CreateNewSip() {
             {/* Body */}
             <Tooltip>
               <FormField
-                control={form.control}
+                control={sipForm.control}
                 name='body'
                 render={({ field }) => (
                   <FormItem className='flex-1 sm:max-w-md'>
@@ -380,7 +380,7 @@ export function CreateNewSip() {
             {/* Taste */}
             <Tooltip>
               <FormField
-                control={form.control}
+                control={sipForm.control}
                 name='taste'
                 render={({ field }) => (
                   <FormItem className='flex-1 sm:max-w-md'>
@@ -409,7 +409,7 @@ export function CreateNewSip() {
             {/* Finish */}
             <Tooltip>
               <FormField
-                control={form.control}
+                control={sipForm.control}
                 name='finish'
                 render={({ field }) => (
                   <FormItem className='flex-1 sm:max-w-md'>
@@ -438,7 +438,7 @@ export function CreateNewSip() {
           </div>
           {/* Notes */}
           <FormField
-            control={form.control}
+            control={sipForm.control}
             name='notes'
             render={({ field }) => (
               <FormItem className='flex-1 max-w-2xl'>
