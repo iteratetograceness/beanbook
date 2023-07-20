@@ -3,7 +3,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { format } from 'date-fns'
-import { z } from 'zod'
 import { Calendar as CalendarIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -27,6 +26,7 @@ import {
   BODY,
   COMMON_ADJECTIVES,
   FINISH,
+  SipSchema,
   sipSchema,
 } from '@/lib/schemas'
 import { Info } from 'lucide-react'
@@ -40,7 +40,7 @@ import { BREW_METHOD } from '@/lib/schemas'
 import { Textarea } from '../ui/textarea'
 
 export function CreateNewSip() {
-  const sipForm = useForm<z.infer<typeof sipSchema>>({
+  const sipForm = useForm<SipSchema>({
     resolver: zodResolver(sipSchema),
     defaultValues: {
       name: '',
@@ -54,12 +54,13 @@ export function CreateNewSip() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof sipSchema>) {
+  function onSubmit(values: SipSchema) {
     console.log(values)
   }
 
   return (
     <TooltipProvider delayDuration={0}>
+      {/* @ts-ignore -- Investigate: "Type instantiation is excessively deep and possibly infinite."*/}
       <Form {...sipForm}>
         <form
           className='flex flex-col gap-4'
@@ -210,7 +211,6 @@ export function CreateNewSip() {
                   </TooltipTrigger>
                   <FormControl>
                     <RadioGroup
-                      // @ts-expect-error -- we can be confident that the parameter is a string.
                       onValueChange={field.onChange}
                       defaultValue='medium'
                     >

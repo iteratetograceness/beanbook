@@ -1,5 +1,5 @@
-import { CreateNewSip } from '@/components/form/create-new-sip'
-import { TastingGuide } from '@/components/form/tasting-guide'
+import { CreateNewSip } from '@/components/add-new/create-new-sip'
+import { TastingGuide } from '@/components/add-new/tasting-guide'
 import { Card } from '@/components/ui/card'
 
 export default function AddNewSip() {

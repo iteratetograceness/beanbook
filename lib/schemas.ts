@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import * as z from 'zod'
 import { Generated, ColumnType } from 'kysely'
 
 const ROAST = ['light', 'medium', 'dark'] as const
@@ -86,9 +86,7 @@ export const FINISH = [
 ]
 
 export const sipSchema = z.object({
-  name: z.string({
-    required_error: 'Name is required',
-  }),
+  name: z.string().min(1),
   origin: z.optional(z.string()),
   price: z.optional(z.number()),
   roaster: z.optional(z.string()),
@@ -100,14 +98,16 @@ export const sipSchema = z.object({
     .min(0)
     .max(10),
   roast: z.optional(z.enum(ROAST)),
-  brew_method: z.array(z.string()),
-  aroma: z.array(z.string()),
-  acidity: z.array(z.string()),
-  body: z.array(z.string()),
-  taste: z.array(z.string()),
-  finish: z.array(z.string()),
+  brew_method: z.array(z.string()).max(25).optional(),
+  aroma: z.array(z.string()).max(25).optional(),
+  acidity: z.array(z.string()).max(25).optional(),
+  body: z.array(z.string()).max(25).optional(),
+  taste: z.array(z.string()).max(25).optional(),
+  finish: z.array(z.string()).max(25).optional(),
   notes: z.optional(z.string()),
 })
+
+export type SipSchema = z.infer<typeof sipSchema>
 
 interface SipTable {
   id: `sip_${string}`
